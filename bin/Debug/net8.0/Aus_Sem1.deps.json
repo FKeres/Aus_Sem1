@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Aus_Sem1/1.0.0": {
+        "runtime": {
+          "Aus_Sem1.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Aus_Sem1/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

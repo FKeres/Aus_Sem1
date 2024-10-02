@@ -1,0 +1,14 @@
+C:\Users\fikesk\C#Projects\Aus_Sem1\bin\Debug\net8.0\Aus_Sem1.exe
+C:\Users\fikesk\C#Projects\Aus_Sem1\bin\Debug\net8.0\Aus_Sem1.deps.json
+C:\Users\fikesk\C#Projects\Aus_Sem1\bin\Debug\net8.0\Aus_Sem1.runtimeconfig.json
+C:\Users\fikesk\C#Projects\Aus_Sem1\bin\Debug\net8.0\Aus_Sem1.dll
+C:\Users\fikesk\C#Projects\Aus_Sem1\bin\Debug\net8.0\Aus_Sem1.pdb
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\Aus_Sem1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\Aus_Sem1.AssemblyInfoInputs.cache
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\Aus_Sem1.AssemblyInfo.cs
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\Aus_Sem1.csproj.CoreCompileInputs.cache
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\Aus_Sem1.dll
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\refint\Aus_Sem1.dll
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\Aus_Sem1.pdb
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\Aus_Sem1.genruntimeconfig.cache
+C:\Users\fikesk\C#Projects\Aus_Sem1\obj\Debug\net8.0\ref\Aus_Sem1.dll
