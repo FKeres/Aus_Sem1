@@ -138,6 +138,13 @@
             Console.WriteLine(item);
         }
 
+        Test test = new Test(1000000, 2);
+        test.TestOperations();
+
+        List<int> list1 = test.Tree.InOrder();
+        foreach(var element1 in list1) {
+            Console.WriteLine(element1);
+        }
     }
 
 
