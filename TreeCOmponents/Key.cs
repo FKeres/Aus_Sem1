@@ -3,7 +3,7 @@ class Key :  IComparable<Key>
     #region Attributes
 
     
-    private Object _key;
+    private IComparable _key;
 
     #endregion
 
@@ -11,28 +11,20 @@ class Key :  IComparable<Key>
 
     public Key(Object key)
     {
-        if (!(key is IComparable))
+        if (key is not IComparable keyIC)
         {
             throw new ArgumentException("Key must implement IComparable.");
         }
 
-        _key = key;
+        _key = keyIC;
     }
 
     #endregion
 
     #region Get/Set
 
-    public Object KeyAttr { 
+    public IComparable KeyAttr { 
         get => _key; 
-        set
-        {
-            if (!(value is IComparable))
-            {
-                throw new ArgumentException("Key must implement IComparable.");
-            }
-            _key = value;
-        } 
     }
 
     public int CompareTo(Key? other){
@@ -41,7 +33,11 @@ class Key :  IComparable<Key>
             return 1;
         }
 
-        return ((IComparable)_key).CompareTo(other._key);
+        if(!(other.KeyAttr.GetType() == _key.GetType())) {
+            throw new ArgumentException("Key types must be the same.");
+        }
+
+        return _key.CompareTo(other._key);
     }
 
     #endregion
