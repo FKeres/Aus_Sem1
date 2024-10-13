@@ -10,6 +10,7 @@ class Node<T>
     private Node<T> _rightN;
     private Node<T> _parent;
     private bool _imLeft;
+    private int _dimension;
 
     #endregion
 
@@ -31,6 +32,7 @@ class Node<T>
         _rightN = other.RightN;
         _parent = other._parent;
         _imLeft = other._imLeft;
+        _dimension = -1;
     }
 
     #endregion
@@ -60,6 +62,7 @@ class Node<T>
     internal Node<T> RightN { get => _rightN; set => _rightN = value; }
     internal Node<T> Parent { get => _parent; set => _parent = value; }
     internal bool ImLeft {get => _imLeft; set => _imLeft = value; }
+    public int Dimension { get => _dimension; set => _dimension = value; }
 
     #endregion
 
@@ -112,6 +115,14 @@ class Node<T>
     /// <returns>bool</returns>
     public bool HasParent() {
         return _parent is not null;
+    }
+
+    /// <summary>
+    /// tells if current node is leaf or not
+    /// </summary>
+    /// <returns>bool</returns>
+    public bool ImLeaf() {
+        return _leftN is null && _rightN is null;
     }
     #endregion
 }

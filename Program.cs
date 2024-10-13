@@ -76,7 +76,7 @@
         List<Key> keys14 = [new Key(27), new Key(43)];
         tree.AddElement(keys14, "Nováky");
         */
-        /*
+        
         List<Key> keys1 = [new Key(20), new Key(30)];
         tree.AddElement(keys1, "13");
 
@@ -134,17 +134,20 @@
             Console.WriteLine(element);
         }
 
-        foreach(var item in tree.FindElement(keys14)) {
-            Console.WriteLine(item);
-        }
-        */
+        Node<string> startNode = tree.FindNode(keys2)[0];
+
+        Node<string> minX = tree.FIndMinForDimension(0, startNode.RightN);
+        Node<string> minY = tree.FIndMinForDimension(1, startNode.RightN);
+
+
+        /*
         Test test = new Test(10000, 1);
         if(test.TestOperations()) {
             Console.WriteLine("Test done ok");
         } else {
             Console.WriteLine("Test not done ok");
         }
-
+        */
     }
 
 

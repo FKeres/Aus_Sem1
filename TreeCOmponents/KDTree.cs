@@ -40,6 +40,7 @@ class KDTree<T>
 
         if (_root is null) {
             _root = nodeToBeAdded;
+            _root.Dimension = 0;
             return;
         }
 
@@ -50,6 +51,7 @@ class KDTree<T>
 
         while(!spotFound){
             int currentDimension = actualCompNodeLevel % actualNode.Keys.Count;
+            int nextDimension = (actualCompNodeLevel + 1) % actualNode.Keys.Count;
 
             compResult = KDTree<T>.CompareNodeKeys(currentDimension, actualNode, nodeToBeAdded);
 
@@ -60,7 +62,7 @@ class KDTree<T>
                     actualNode.LeftN = nodeToBeAdded;
                     actualNode.LeftN.Parent = actualNode;
                     actualNode.LeftN.ImLeft = true;
-                    actualNode.LeftN.Dimension = currentDimension;
+                    actualNode.LeftN.Dimension = nextDimension;
                     spotFound = true;
                 }
 
@@ -71,7 +73,7 @@ class KDTree<T>
                     actualNode.RightN = nodeToBeAdded;
                     actualNode.RightN.Parent = actualNode;
                     actualNode.RightN.ImLeft = false;
-                    actualNode.RightN.Dimension = currentDimension;
+                    actualNode.RightN.Dimension = nextDimension;
                     spotFound = true;
                 }
             }
@@ -107,6 +109,56 @@ class KDTree<T>
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys)) {
                     items.Add(actualNode.Data);
+                }
+
+                if (actualNode.HasLeftSon()) {
+                    actualNode = actualNode.LeftN;
+                } else {
+                    itemsFound = true;
+                }
+
+            } else {
+                if (actualNode.HasRightSon()) {
+                    actualNode = actualNode.RightN;
+                } else {
+                    itemsFound = true;
+                }
+            }
+
+            ++actualCompNodeLevel;
+        }
+
+        return items;
+
+    }
+
+        /// <summary>
+    /// finds elements by given keys
+    /// </summary>
+    /// <param name="keys"></param>
+    /// <returns>List<T></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public List<Node<T>> FindNode(List<Key> keys) {
+        if (!CheckKeyDimensionsFromK(keys)) {
+            throw new ArgumentException("Key List does not contain correct number of dimensions.");
+        }
+
+        if (_root is null) {
+            return null;
+        }
+
+        bool itemsFound = false;
+        var actualNode = _root;
+        int actualCompNodeLevel = 0;
+        int compResult;
+        List<Node<T>> items = new List<Node<T>>();
+
+        while(!itemsFound) {
+            compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+
+            if(compResult <= 0) {
+                if(compResult == 0 && KeysMatch(actualNode, keys)) {
+                    items.Add(actualNode);
                 }
 
                 if (actualNode.HasLeftSon()) {
@@ -178,11 +230,57 @@ class KDTree<T>
         return items;
     }
 
+    /// <summary>
+    /// finds minimum of given dimension
+    /// </summary>
+    /// <param name="dimension"></param>
+    /// <param name="startNode"></param>
+    /// <returns>Node<typeparamref name="T"/></returns>
     public Node<T> FIndMinForDimension(int dimension, Node<T> startNode) {
 
         Node<T> minNode = startNode;
         Node<T> actualNode = startNode;
+        bool allProcessed = false;
 
+        while(!allProcessed) {
+
+            mostLeft:
+            while(actualNode.HasLeftSon()) {
+                actualNode = actualNode.LeftN;
+            }
+
+            if(actualNode.Keys[dimension].CompareTo(minNode.Keys[dimension]) < 0) {
+                minNode = actualNode;
+            }
+            
+            checkRight:
+            if(actualNode.HasRightSon() && !(actualNode.Dimension == dimension)) {
+                actualNode = actualNode.RightN;
+                goto mostLeft;
+            }
+
+            upstairs:
+            if(actualNode.ImLeft) {
+                if(!(actualNode == startNode)) {
+                    actualNode = actualNode.Parent;
+                    if(actualNode.Keys[dimension].CompareTo(minNode.Keys[dimension]) < 0) {
+                        minNode = actualNode;
+                    }
+                    goto checkRight;
+                }
+                allProcessed = true;
+            } else {
+                actualNode = actualNode.Parent;
+                if(!(actualNode == startNode)) {
+                    if(actualNode is not null) {
+                        goto upstairs;
+                    }
+                }
+                allProcessed = true;
+            }
+        }
+
+        return minNode;
     }
 
     /// <summary>
