@@ -64,27 +64,52 @@ class Node<T>
     #endregion
 
     #region Methods
+    /// <summary>
+    /// checks if the given position is not out of bounds
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public bool CheckCorrectPos(int position) {
         return position > 0 && position < _keys.Capacity;
     }
 
+    /// <summary>
+    /// Adds Key to the node
+    /// </summary>
+    /// <param name="key"></param>
     public void AddExisitingKey(Key key) {
         _keys.Add(key);
     }
 
-    public void AddNewKey(Object key) {
+    /// <summary>
+    /// adds element creates key and inserts into key list 
+    /// </summary>
+    /// <param name="key"></param>
+    public void AddNewKey(IComparable key) {
         Key _key = new Key(key);
         _keys.Add(_key);
     }
 
+    /// <summary>
+    /// checks if actual node has left son
+    /// </summary>
+    /// <returns>bool</returns>
     public bool HasLeftSon() {
         return _leftN is not null;
     }
 
+    /// <summary>
+    /// checks if actual node has right son
+    /// </summary>
+    /// <returns>bool</returns>
     public bool HasRightSon() {
         return _rightN is not null;
     }
 
+    /// <summary>
+    /// checks is actual node has parent
+    /// </summary>
+    /// <returns>bool</returns>
     public bool HasParent() {
         return _parent is not null;
     }

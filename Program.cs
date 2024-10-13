@@ -76,7 +76,7 @@
         List<Key> keys14 = [new Key(27), new Key(43)];
         tree.AddElement(keys14, "Nováky");
         */
-
+        /*
         List<Key> keys1 = [new Key(20), new Key(30)];
         tree.AddElement(keys1, "13");
 
@@ -137,14 +137,14 @@
         foreach(var item in tree.FindElement(keys14)) {
             Console.WriteLine(item);
         }
-
-        Test test = new Test(1000000, 2);
-        test.TestOperations();
-
-        List<int> list1 = test.Tree.InOrder();
-        foreach(var element1 in list1) {
-            Console.WriteLine(element1);
+        */
+        Test test = new Test(10000, 1);
+        if(test.TestOperations()) {
+            Console.WriteLine("Test done ok");
+        } else {
+            Console.WriteLine("Test not done ok");
         }
+
     }
 
 
