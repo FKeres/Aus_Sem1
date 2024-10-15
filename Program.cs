@@ -33,50 +33,48 @@
         */
         
         KDTree<string> tree = new KDTree<string>();
-        /*
+        
         List<Key> keys1 = [new Key(23), new Key(35)];
         tree.AddElement(keys1, "Nitra");
 
-        List<Key> keys2 = [new Key(20), new Key(33)];
-        tree.AddElement(keys2, "Sereď");
+        List<Key> keys2 = [new Key(22), new Key(39)];
+        tree.AddElement(keys2, "Senica");
         
-        List<Key> keys3 = [new Key(25), new Key(36)];
-        tree.AddElement(keys3, "Topoľčany");
+        List<Key> keys3 = [new Key(22), new Key(31)];
+        tree.AddElement(keys3, "Senica - škola");
 
-        List<Key> keys4 = [new Key(16), new Key(31)];
-        tree.AddElement(keys4, "Galanta");
+        List<Key> keys4 = [new Key(22), new Key(42)];
+        tree.AddElement(keys4, "Senica - Stanica");
 
-        List<Key> keys5 = [new Key(14), new Key(39)];
-        tree.AddElement(keys5, "Senica");
+        List<Key> keys5 = [new Key(22), new Key(32)];
+        tree.AddElement(keys5, "Senica - úrad");
 
-        List<Key> keys6 = [new Key(28), new Key(34)];
-        tree.AddElement(keys6, "Tlmače");
+        List<Key> keys6 = [new Key(12), new Key(41)];
+        tree.AddElement(keys6, "Hodonín");
 
-        List<Key> keys7 = [new Key(24), new Key(40)];
-        tree.AddElement(keys7, "Bošany");
+        List<Key> keys7 = [new Key(24), new Key(36)];
+        tree.AddElement(keys7, "Tlmače - úrad");
 
-        List<Key> keys8 = [new Key(13), new Key(32)];
-        tree.AddElement(keys8, "Bratislava");
+        List<Key> keys8 = [new Key(24), new Key(34)];
+        tree.AddElement(keys8, "Tlmače");
 
-        List<Key> keys9 = [new Key(12), new Key(41)];
-        tree.AddElement(keys9, "Hodonín");
+        List<Key> keys9 = [new Key(24), new Key(35)];
+        tree.AddElement(keys9, "Tlmače - nem.");
 
-        List<Key> keys10 = [new Key(17), new Key(42)];
-        tree.AddElement(keys10, "Trnava");
+        List<Key> keys10 = [new Key(30), new Key(33)];
+        tree.AddElement(keys10, "Levice");
 
-        List<Key> keys11 = [new Key(26), new Key(35)];
-        tree.AddElement(keys11, "Moravce");
-
-        List<Key> keys12 = [new Key(30), new Key(33)];
-        tree.AddElement(keys12, "Levice");
+        List<Key> keys11 = [new Key(24), new Key(40)];
+        tree.AddElement(keys11, "Tlmače - parkovisko");
 
         List<Key> keys13 = [new Key(29), new Key(46)];
         tree.AddElement(keys13, "Bojnice");
 
         List<Key> keys14 = [new Key(27), new Key(43)];
         tree.AddElement(keys14, "Nováky");
-        */
         
+        
+        /*
         List<Key> keys1 = [new Key(20), new Key(30)];
         tree.AddElement(keys1, "13");
 
@@ -133,11 +131,15 @@
         foreach(var element in list) {
             Console.WriteLine(element);
         }
-
+        */
         Node<string> startNode = tree.FindNode(keys2)[0];
+        startNode = tree.Root.RightN;
 
-        Node<string> minX = tree.FIndMinForDimension(0, startNode.RightN);
-        Node<string> minY = tree.FIndMinForDimension(1, startNode.RightN);
+        Node<string> minX1 = tree.FIndMinForDimension(0, startNode);
+        Node<string> minY1 = tree.FIndMinForDimension(1, startNode);
+
+        Node<string> maxX = tree.FIndMaxForDimension(0, startNode);
+        Node<string> maxY = tree.FIndMaxForDimension(1, startNode);
 
 
         /*
@@ -148,6 +150,7 @@
             Console.WriteLine("Test not done ok");
         }
         */
+        
     }
 
 

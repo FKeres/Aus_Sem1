@@ -270,9 +270,9 @@ class KDTree<T>
                 }
                 allProcessed = true;
             } else {
-                actualNode = actualNode.Parent;
                 if(!(actualNode == startNode)) {
                     if(actualNode is not null) {
+                        actualNode = actualNode.Parent;
                         goto upstairs;
                     }
                 }
@@ -284,11 +284,64 @@ class KDTree<T>
     }
 
     /// <summary>
+    /// finds maximum of given dimension
+    /// </summary>
+    /// <param name="dimension"></param>
+    /// <param name="startNode"></param>
+    /// <returns>Node<typeparamref name="T"/></returns>
+    public Node<T> FIndMaxForDimension(int dimension, Node<T> startNode) {
+
+        Node<T> maxNode = startNode;
+        Node<T> actualNode = startNode;
+        bool allProcessed = false;
+
+        while(!allProcessed) {
+
+            mostRight:
+            while(actualNode.HasRightSon()) {
+                actualNode = actualNode.RightN;
+            }
+
+            if(actualNode.Keys[dimension].CompareTo(maxNode.Keys[dimension]) > 0) {
+                maxNode = actualNode;
+            }
+            
+            checkLeft:
+            if(actualNode.HasLeftSon() && !(actualNode.Dimension == dimension)) {
+                actualNode = actualNode.LeftN;
+                goto mostRight;
+            }
+
+            upstairs:
+            if(!actualNode.ImLeft) {
+                if(!(actualNode == startNode)) {
+                    actualNode = actualNode.Parent;
+                    if(actualNode.Keys[dimension].CompareTo(maxNode.Keys[dimension]) > 0) {
+                        maxNode = actualNode;
+                    }
+                    goto checkLeft;
+                }
+                allProcessed = true;
+            } else {
+                if(!(actualNode == startNode)) {
+                    if(actualNode is not null) {
+                        actualNode = actualNode.Parent;
+                        goto upstairs;
+                    }
+                }
+                allProcessed = true;
+            }
+        }
+
+        return maxNode;
+    }
+
+    /// <summary>
     /// removes element from tree with given keys
     /// </summary>
     /// <param name="keys"></param>
     public void RemoveElement(List<Key> keys) {
-
+        
     }
 
     /// <summary>

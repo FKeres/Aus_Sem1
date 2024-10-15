@@ -6,8 +6,8 @@ class Test
     #region Attributes
     private static readonly Random random = new Random();
     private KDTree<int> _tree;
-    //private List<Node<int>> _list;
-    private List<int> _list;
+    private List<Node<int>> _list;
+    //private List<int> _list;
     private int _operationsNum;
     private int _treeDimension;
 
@@ -16,8 +16,8 @@ class Test
     #region Constructor 
     public Test(int operationsNum, int treeDimension) {
         _tree = new KDTree<int>();
-        //_list = new List<Node<int>>();
-        _list = new List<int>();
+        _list = new List<Node<int>>();
+        //_list = new List<int>();
         _operationsNum = operationsNum;
         _treeDimension = treeDimension;
     }
@@ -25,8 +25,8 @@ class Test
 
     #region Get/Set
     internal KDTree<int> Tree { get => _tree; set => _tree = value; }
-    //internal List<Node<int>> List { get => _list; set => _list = value; }
-    internal List<int> List { get => _list; set => _list = value; }
+    internal List<Node<int>> List { get => _list; set => _list = value; }
+    //internal List<int> List { get => _list; set => _list = value; }
     #endregion
 
     #region Methods
@@ -45,9 +45,9 @@ class Test
                 for(int j = 0; j < _treeDimension; ++j) {
                    keys.Add(GenerateKey());
                 }
-                _tree.AddElement(keys, i);
-               // _list.Add(new Node<int>(keys, i, null, null, null));
-               _list.Add(i);
+                //_tree.AddElement(keys, i);
+                _list.Add(new Node<int>(keys, i, null, null, null));
+                //_list.Add(i);
             } else if (operation == 0 ){
                 List<Key> keys = new List<Key>();
                 for(int j = 0; j < _treeDimension; ++j) {
@@ -62,9 +62,7 @@ class Test
         
         List<int> treeList = _tree.InOrder();
 
-        bool same = _list == treeList;
-
-        if(_list.Count == treeList.Count && same) {
+        if(_list.Count == treeList.Count) {
             return true;
         }
 
