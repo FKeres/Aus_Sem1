@@ -32,11 +32,11 @@
         List<Key> keys4 = [key7, key8];
         */
         
-        KDTree<string> tree = new KDTree<string>();
+        //KDTree<string> tree = new KDTree<string>();
         
-        List<Key> keys1 = [new Key(23), new Key(35)];
-        tree.AddElement(keys1, "Nitra");
-
+        //List<Key> keys1 = [new Key(23), new Key(35)];
+        //tree.AddElement(keys1, "Nitra");
+        /*
         List<Key> keys2 = [new Key(22), new Key(39)];
         tree.AddElement(keys2, "Senica");
         
@@ -51,7 +51,8 @@
 
         List<Key> keys6 = [new Key(12), new Key(41)];
         tree.AddElement(keys6, "Hodonín");
-
+        */
+        /*
         List<Key> keys7 = [new Key(24), new Key(36)];
         tree.AddElement(keys7, "Tlmače - úrad");
 
@@ -64,6 +65,9 @@
         List<Key> keys10 = [new Key(30), new Key(33)];
         tree.AddElement(keys10, "Levice");
 
+         List<Key> keys15 = [new Key(30), new Key(33)];
+        tree.AddElement(keys10, "Levice úr");
+
         List<Key> keys11 = [new Key(24), new Key(40)];
         tree.AddElement(keys11, "Tlmače - parkovisko");
 
@@ -72,7 +76,7 @@
 
         List<Key> keys14 = [new Key(27), new Key(43)];
         tree.AddElement(keys14, "Nováky");
-        
+        */
         
         /*
         List<Key> keys1 = [new Key(20), new Key(30)];
@@ -133,17 +137,41 @@
         }
         */
 
-        tree.RemoveElement(keys1);
-
-
+        //tree.RemoveElement(keys1);
         /*
-        Test test = new Test(10000, 1);
+        Test test = new Test(1000000, 2);
         if(test.TestOperations()) {
             Console.WriteLine("Test done ok");
         } else {
             Console.WriteLine("Test not done ok");
         }
         */
+        
+        all();
+        //test(755);
+        
+        
+       
+    }
+
+    public static void all() {
+        int i = 1;
+        while(true) {
+            Test test = new Test(9, 2, i);
+            bool answer = test.TestOperations();
+            Console.WriteLine(i);
+            if(!answer) {
+                throw new ArgumentException(i.ToString());
+            }
+            i++;
+        }
+    }
+
+    public static void test(int num) {
+         
+        Test test = new Test(9, 2, num);
+        bool answer = test.TestOperations();
+        Console.WriteLine(answer); 
         
     }
 

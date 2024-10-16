@@ -73,7 +73,7 @@ class Node<T>
     /// <param name="position"></param>
     /// <returns></returns>
     public bool CheckCorrectPos(int position) {
-        return position > 0 && position < _keys.Capacity;
+        return position > 0 && position < _keys.Count;
     }
 
     /// <summary>

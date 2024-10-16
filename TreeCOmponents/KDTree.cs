@@ -83,6 +83,61 @@ class KDTree<T>
     }
 
     /// <summary>
+    /// inserts data into the tree with given keys
+    /// </summary>
+    /// <param name="nodeToBeAdded"></param>
+    /// <exception cref="ArgumentException"></exception>
+    public void AddNode(Node<T> nodeToBeAdded) {
+
+        if (!CheckKeyDimensions(nodeToBeAdded)) {
+            throw new ArgumentException("Node does not contain correct number of dimensions.");
+        }
+
+        if (_root is null) {
+            _root = nodeToBeAdded;
+            _root.Dimension = 0;
+            return;
+        }
+
+        var actualNode = _root;
+        int actualCompNodeLevel = 0;
+        bool spotFound = false;
+        int compResult;
+
+        while(!spotFound){
+            int currentDimension = actualCompNodeLevel % actualNode.Keys.Count;
+            int nextDimension = (actualCompNodeLevel + 1) % actualNode.Keys.Count;
+
+            compResult = KDTree<T>.CompareNodeKeys(currentDimension, actualNode, nodeToBeAdded);
+
+            if(compResult <= 0) {
+                if (actualNode.HasLeftSon()) {
+                    actualNode = actualNode.LeftN;
+                } else {
+                    actualNode.LeftN = nodeToBeAdded;
+                    actualNode.LeftN.Parent = actualNode;
+                    actualNode.LeftN.ImLeft = true;
+                    actualNode.LeftN.Dimension = nextDimension;
+                    spotFound = true;
+                }
+
+            } else {
+                if (actualNode.HasRightSon()) {
+                    actualNode = actualNode.RightN;
+                } else {
+                    actualNode.RightN = nodeToBeAdded;
+                    actualNode.RightN.Parent = actualNode;
+                    actualNode.RightN.ImLeft = false;
+                    actualNode.RightN.Dimension = nextDimension;
+                    spotFound = true;
+                }
+            }
+
+            ++actualCompNodeLevel;
+        }
+    }
+
+    /// <summary>
     /// finds elements by given keys
     /// </summary>
     /// <param name="keys"></param>
@@ -186,14 +241,14 @@ class KDTree<T>
     /// returns sorted list by keys of tree elements 
     /// </summary>
     /// <returns>List<typeparamref name="T"/></returns>
-    public List<T> InOrder() {
+    public List<Node<T>> InOrder() {
         if (_root is null) {
             return null;
         }
 
         var actualNode = _root;
         bool allProcessed = false;
-        List<T> items = new List<T>();
+        List<Node<T>> items = new List<Node<T>>();
 
         while(!allProcessed) {
 
@@ -202,7 +257,7 @@ class KDTree<T>
                 actualNode = actualNode.LeftN;
             }
 
-            items.Add(actualNode.Data);
+            items.Add(actualNode);
 
             checkRight:
             if(actualNode.HasRightSon()) {
@@ -213,7 +268,7 @@ class KDTree<T>
             upstairs:
             if(actualNode.ImLeft) {
                 actualNode = actualNode.Parent;
-                items.Add(actualNode.Data);
+                items.Add(actualNode);
                 goto checkRight;
             } else {
                 actualNode = actualNode.Parent;
@@ -236,10 +291,12 @@ class KDTree<T>
     /// <param name="dimension"></param>
     /// <param name="startNode"></param>
     /// <returns>Node<typeparamref name="T"/></returns>
-    public Node<T> FIndMinForDimension(int dimension, Node<T> startNode) {
+    public List<Node<T>> FIndMinForDimension(int dimension, Node<T> startNode) {
 
         Node<T> minNode = startNode;
         Node<T> actualNode = startNode;
+        List<Node<T>> minNodes = new List<Node<T>>();
+
         bool allProcessed = false;
 
         while(!allProcessed) {
@@ -250,7 +307,11 @@ class KDTree<T>
             }
 
             if(actualNode.Keys[dimension].CompareTo(minNode.Keys[dimension]) < 0) {
+                minNodes.Clear();
+                minNodes.Add(actualNode);
                 minNode = actualNode;
+            } else if(actualNode.Keys[dimension].CompareTo(minNode.Keys[dimension]) == 0) {
+                minNodes.Add(actualNode);
             }
             
             checkRight:
@@ -264,7 +325,11 @@ class KDTree<T>
                 if(!(actualNode == startNode)) {
                     actualNode = actualNode.Parent;
                     if(actualNode.Keys[dimension].CompareTo(minNode.Keys[dimension]) < 0) {
+                        minNodes.Clear();
+                        minNodes.Add(actualNode);
                         minNode = actualNode;
+                    } else if(actualNode.Keys[dimension].CompareTo(minNode.Keys[dimension]) == 0) {
+                        minNodes.Add(actualNode);
                     }
                     goto checkRight;
                 }
@@ -280,7 +345,7 @@ class KDTree<T>
             }
         }
 
-        return minNode;
+        return minNodes;
     }
 
     /// <summary>
@@ -343,8 +408,10 @@ class KDTree<T>
     public void RemoveElement(List<Key> keys) {
         List<Node<T>> nodesToBeRemoved = new List<Node<T>>();
         nodesToBeRemoved = FindNode(keys);
-        foreach(var node in nodesToBeRemoved) {
-            RemoveNode(node);
+        if(nodesToBeRemoved is not null) {
+            foreach(var node in nodesToBeRemoved) {
+                RemoveNode(node);
+            }
         }
     }
 
@@ -354,25 +421,61 @@ class KDTree<T>
     /// <param name="nodeToBeRemoved"></param>
     public void RemoveNode(Node<T> nodeToBeRemoved) {
         bool nodeRemoved = false;
+        bool allNodesRemoved = false;
         Node<T> replacingNode;
+        List<Node<T>> replacingNodes = new List<Node<T>>();
+        List<Node<T>> nodesToRemove = new List<Node<T>>();
+        int deleteNodeIndex = 0;
 
-        while(!nodeRemoved) {
-            if(nodeToBeRemoved.ImLeaf()) {
-                if(nodeToBeRemoved.ImLeft) {
-                    nodeToBeRemoved.Parent.LeftN = null;
-                } else {
-                    nodeToBeRemoved.Parent.RightN = null;
+        while(!allNodesRemoved) {
+            while(!nodeRemoved) {
+                if(nodeToBeRemoved.ImLeaf()) {
+                    if(nodeToBeRemoved.ImLeft) {
+                        if(nodeToBeRemoved.HasParent()) {
+                            nodeToBeRemoved.Parent.LeftN = null;
+                        }
+                        
+                    } else {
+                        if(nodeToBeRemoved.HasParent()) {
+                            nodeToBeRemoved.Parent.RightN = null;
+                        }
+                    }
+
+                    nodeToBeRemoved.Parent = null;
+                    if(nodeToBeRemoved == _root) {
+                        _root = null;
+                    }
+                    nodeRemoved = true;
+                    continue;
                 }
 
-                nodeToBeRemoved.Parent = null;
-                nodeRemoved = true;
-                continue;
+                if(nodeToBeRemoved.HasLeftSon()) {
+                    replacingNode = FIndMaxForDimension( nodeToBeRemoved.Dimension, nodeToBeRemoved.LeftN);
+                    ReplaceNodes(nodeToBeRemoved, replacingNode);
+                } else {
+                    replacingNodes = FIndMinForDimension(nodeToBeRemoved.Dimension, nodeToBeRemoved.RightN);
+                    if(replacingNodes.Count > 1) {
+                        for (int i = 1; i < replacingNodes.Count; ++i) {
+                            nodesToRemove.Add(replacingNodes[i]);
+                        }
+                    }
+                    ReplaceNodes(nodeToBeRemoved, replacingNodes[0]);
+                }
+            }
+            
+            
+            if(deleteNodeIndex < nodesToRemove.Count) {
+                nodeRemoved = false;
+                nodeToBeRemoved = nodesToRemove[deleteNodeIndex];
+                ++deleteNodeIndex;
+            } else {
+                allNodesRemoved = true;
             }
 
-            if(nodeToBeRemoved.HasLeftSon()) {
-                replacingNode = FIndMaxForDimension( nodeToBeRemoved.Dimension, nodeToBeRemoved.LeftN);
-                ReplaceNodes(nodeToBeRemoved, replacingNode);
-            }
+        }
+
+        foreach(var node in nodesToRemove) {
+            AddNode(node);
         }
     }
 

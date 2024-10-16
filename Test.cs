@@ -4,29 +4,35 @@ using System.Runtime.CompilerServices;
 class Test
 {
     #region Attributes
-    private static readonly Random random = new Random();
+    private readonly Random random;
     private KDTree<int> _tree;
     private List<Node<int>> _list;
-    //private List<int> _list;
     private int _operationsNum;
     private int _treeDimension;
 
     #endregion
 
     #region Constructor 
+    public Test(int operationsNum, int treeDimension, int seed) {
+        _tree = new KDTree<int>();
+        _list = new List<Node<int>>();
+        _operationsNum = operationsNum;
+        _treeDimension = treeDimension;
+        random = new Random(seed);
+    }
+
     public Test(int operationsNum, int treeDimension) {
         _tree = new KDTree<int>();
         _list = new List<Node<int>>();
-        //_list = new List<int>();
         _operationsNum = operationsNum;
         _treeDimension = treeDimension;
+        random = new Random();
     }
     #endregion
 
     #region Get/Set
     internal KDTree<int> Tree { get => _tree; set => _tree = value; }
     internal List<Node<int>> List { get => _list; set => _list = value; }
-    //internal List<int> List { get => _list; set => _list = value; }
     #endregion
 
     #region Methods
@@ -45,9 +51,12 @@ class Test
                 for(int j = 0; j < _treeDimension; ++j) {
                    keys.Add(GenerateKey());
                 }
-                //_tree.AddElement(keys, i);
-                _list.Add(new Node<int>(keys, i, null, null, null));
-                //_list.Add(i);
+
+                Node<int> node = new Node<int>(keys, i, null, null, null);
+
+                _tree.AddNode(node);
+                _list.Add(node);
+
             } else if (operation == 0 ){
                 List<Key> keys = new List<Key>();
                 for(int j = 0; j < _treeDimension; ++j) {
@@ -55,15 +64,34 @@ class Test
                 }
                 _tree.FindElement(keys);
             } else {
-                continue;
+                List<Key> keys = new List<Key>();
+                for(int j = 0; j < _treeDimension; ++j) {
+                   keys.Add(GenerateKey());
+                }
+                List<Node<int>> deletion;
+                deletion = _tree.FindNode(keys);
+                _tree.RemoveElement(keys);
+
+                if(deletion is not null) {
+                    foreach(var del in deletion) {
+                        _list.Remove(del);
+                    }
+                }
+
             }
         }
 
         
-        List<int> treeList = _tree.InOrder();
+        List<Node<int>> treeList = _tree.InOrder();
 
-        if(_list.Count == treeList.Count) {
+        if((_list is not null && treeList is not null)){ 
+            if(_list.Count == treeList.Count) {
+                return true;
+            }
+        }else if ((_list is  null && treeList is  null) || (_list.Count == 0 && treeList is null)) {
             return true;
+        } else {
+            return false;
         }
 
         return false;
@@ -74,10 +102,15 @@ class Test
     /// </summary>
     /// <returns>int</returns>
     public int GenerateOperation() {
-        if (random.NextDouble() >= 0.5) {
+        double number = random.NextDouble();
+        
+        if(number > 0.5) {
             return 1;
+        } else if(number <= 0.5 && number > 0.1) {
+            return -1;
+        } else {
+            return 0;
         }
-        return 1;
     }
 
     /// <summary>
