@@ -341,7 +341,112 @@ class KDTree<T>
     /// </summary>
     /// <param name="keys"></param>
     public void RemoveElement(List<Key> keys) {
+        List<Node<T>> nodesToBeRemoved = new List<Node<T>>();
+        nodesToBeRemoved = FindNode(keys);
+        foreach(var node in nodesToBeRemoved) {
+            RemoveNode(node);
+        }
+    }
+
+    /// <summary>
+    /// removes given node from tree
+    /// </summary>
+    /// <param name="nodeToBeRemoved"></param>
+    public void RemoveNode(Node<T> nodeToBeRemoved) {
+        bool nodeRemoved = false;
+        Node<T> replacingNode;
+
+        while(!nodeRemoved) {
+            if(nodeToBeRemoved.ImLeaf()) {
+                if(nodeToBeRemoved.ImLeft) {
+                    nodeToBeRemoved.Parent.LeftN = null;
+                } else {
+                    nodeToBeRemoved.Parent.RightN = null;
+                }
+
+                nodeToBeRemoved.Parent = null;
+                nodeRemoved = true;
+                continue;
+            }
+
+            if(nodeToBeRemoved.HasLeftSon()) {
+                replacingNode = FIndMaxForDimension( nodeToBeRemoved.Dimension, nodeToBeRemoved.LeftN);
+                ReplaceNodes(nodeToBeRemoved, replacingNode);
+            }
+        }
+    }
+
+    /// <summary>
+    /// replace nodes in tree
+    /// </summary>
+    /// <param name="node1"></param>
+    /// <param name="node2"></param>
+    public void ReplaceNodes(Node<T> node1, Node<T> node2) {
+        if(node1 == _root) {
+            _root = node2;
+        }
         
+        Node<T> tempLeft = node1.LeftN;
+        node1.LeftN = node2.LeftN;
+        if(tempLeft == node2) {
+            node2.LeftN = node1;
+        } else {
+            node2.LeftN = tempLeft;
+        }
+
+        Node<T> tempRight = node1.RightN;
+        node1.RightN = node2.RightN;
+        if(tempRight == node2) {
+            node2.RightN = node1;
+        } else {
+            node2.RightN = tempRight;
+        }
+
+        Node<T> tempParent = node1.Parent;
+        if(node1 == node2.Parent) {
+            node1.Parent = node2;
+        } else {
+            node1.Parent = node2.Parent;
+        }
+        node2.Parent = tempParent;
+
+        bool tempImLeft = node1.ImLeft;
+        node1.ImLeft = node2.ImLeft;
+        node2.ImLeft = tempImLeft;
+
+        var tempDimension = node1.Dimension;
+        node1.Dimension = node2.Dimension;
+        node2.Dimension = tempDimension;
+
+        if (node1.HasParent()) {
+            if (node1.ImLeft) {
+                node1.Parent.LeftN = node1;
+            } else {
+                node1.Parent.RightN = node1;
+            }
+        }
+
+        if (node2.HasParent()) {
+            if (node2.ImLeft) {
+                node2.Parent.LeftN = node2;
+            } else {
+                node2.Parent.RightN = node2;
+            }
+        }
+
+        if (node1.HasLeftSon()) {
+            node1.LeftN.Parent = node1;
+        }
+        if (node1.HasRightSon()) {
+            node1.RightN.Parent = node1;
+        }
+        if (node2.HasLeftSon()) {
+            node2.LeftN.Parent = node2;
+        }
+        if (node2.HasRightSon()) {
+            node2.RightN.Parent = node2;
+        }
+
     }
 
     /// <summary>

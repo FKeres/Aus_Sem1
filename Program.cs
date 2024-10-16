@@ -132,14 +132,8 @@
             Console.WriteLine(element);
         }
         */
-        Node<string> startNode = tree.FindNode(keys2)[0];
-        startNode = tree.Root.RightN;
 
-        Node<string> minX1 = tree.FIndMinForDimension(0, startNode);
-        Node<string> minY1 = tree.FIndMinForDimension(1, startNode);
-
-        Node<string> maxX = tree.FIndMaxForDimension(0, startNode);
-        Node<string> maxY = tree.FIndMaxForDimension(1, startNode);
+        tree.RemoveElement(keys1);
 
 
         /*
