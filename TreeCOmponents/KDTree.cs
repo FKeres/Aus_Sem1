@@ -238,7 +238,7 @@ class KDTree<T>
     }
 
     /// <summary>
-    /// returns sorted list by keys of tree elements 
+    /// returns sorted list by keys of tree elements  in order
     /// </summary>
     /// <returns>List<typeparamref name="T"/></returns>
     public List<Node<T>> InOrder() {
@@ -280,6 +280,36 @@ class KDTree<T>
                 allProcessed = true;
             }
 
+        }
+
+        return items;
+    }
+
+    /// <summary>
+    /// returns sorted list by keys of tree elements  in level order
+    /// </summary>
+    /// <returns>List<typeparamref name="T"/></returns>
+    public List<Node<T>> LevelOrder() {
+         if (_root is null) {
+            return null;
+        }
+
+        Node<T> actualNode;
+        List<Node<T>> items = [_root];
+        int indexITP = 0;
+
+        while(indexITP < items.Count) {
+            actualNode = items[indexITP];
+
+            if(actualNode.HasLeftSon()) {
+                items.Add(actualNode.LeftN);
+            }
+
+            if(actualNode.HasRightSon()) {
+                items.Add(actualNode.RightN);
+            }
+
+            ++indexITP;
         }
 
         return items;
