@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 class Test
 {
@@ -44,6 +46,10 @@ class Test
     public bool TestOperations() {
         int operation;
 
+        Stopwatch stopwatch = new Stopwatch();
+
+        List<List<Key>> keyList = new List<List<Key>>();
+
         for(int i = 0; i < _operationsNum; ++i){
             operation = GenerateOperation();
             if(operation == 1) {
@@ -53,8 +59,11 @@ class Test
                 }
 
                 Node<int> node = new Node<int>(keys, i, null, null, null);
-
+                keyList.Add(keys);
+                stopwatch.Start();
                 _tree.AddNode(node);
+                stopwatch.Stop();
+                //Console.WriteLine("insert - " + stopwatch.Elapsed + " " + i + " Node " + node.Data + " key 0 " + node.Keys[0].KeyAttr + " key 1 " + node.Keys[1].KeyAttr);
                 _list.Add(node);
 
             } else if (operation == 0 ){
@@ -62,27 +71,42 @@ class Test
                 for(int j = 0; j < _treeDimension; ++j) {
                    keys.Add(GenerateKey());
                 }
+                stopwatch.Start();
                 _tree.FindElement(keys);
+                stopwatch.Stop();
+                //Console.WriteLine("find - " + stopwatch.Elapsed  + " " + i + " key 0 " + keys[0].KeyAttr + "key 1 " + keys[1].KeyAttr);
             } else {
+                
                 List<Key> keys = new List<Key>();
+                /*
                 for(int j = 0; j < _treeDimension; ++j) {
                    keys.Add(GenerateKey());
                 }
-                List<Node<int>> deletion;
-                deletion = _tree.FindNode(keys);
-                _tree.RemoveElement(keys);
+                */
+                if(keyList.Count != 0) {
+                    keys = keyList[random. Next(keyList.Count)];
+                    List<Node<int>> deletion;
+                    deletion = _tree.FindNode(keys);
+                    stopwatch.Start();
+                    _tree.RemoveElement(keys);
+                    stopwatch.Stop();
+                    //Console.WriteLine("remove - " + stopwatch.Elapsed  + " " + i + " key 0 " + keys[0].KeyAttr + "key 1 " + keys[1].KeyAttr);
 
-                if(deletion is not null) {
-                    foreach(var del in deletion) {
-                        _list.Remove(del);
+                    if(deletion is not null) {
+                        foreach(var del in deletion) {
+                            _list.Remove(del);
+                        }
                     }
                 }
 
             }
         }
 
-        
+        Console.WriteLine("inorder start");
+        stopwatch.Start();
         List<Node<int>> treeList = _tree.InOrder();
+        stopwatch.Stop();
+        Console.WriteLine("inorder done - " + stopwatch.Elapsed);
 
         if((_list is not null && treeList is not null)){ 
             if(_list.Count == treeList.Count) {
@@ -97,6 +121,26 @@ class Test
         return false;
     }
 
+    public TimeSpan TestInsertionTime()
+    {
+        Stopwatch stopwatch = new Stopwatch();
+        
+        stopwatch.Start();
+
+        for (int i = 0; i < _operationsNum; i++)
+        {
+            List<Key> keys = new List<Key>();
+            for(int j = 0; j < _treeDimension; ++j) {
+                keys.Add(GenerateKey());
+            }
+            _tree.AddElement(keys, i);
+        }
+
+        stopwatch.Stop();
+
+        return stopwatch.Elapsed;
+    }
+
     /// <summary>
     /// Generates operation
     /// </summary>
@@ -104,9 +148,9 @@ class Test
     public int GenerateOperation() {
         double number = random.NextDouble();
         
-        if(number > 0.5) {
+        if(number < 0.7) {
             return 1;
-        } else if(number <= 0.5 && number > 0.1) {
+        } else if(number >= 0.7 && number < 0.9) {
             return -1;
         } else {
             return 0;
@@ -118,7 +162,7 @@ class Test
     /// </summary>
     /// <returns>Key</returns>
     public Key GenerateKey() {
-        return new Key(random.NextInt64(100));
+        return new Key(random.NextInt64(50));
     }
 
     #endregion

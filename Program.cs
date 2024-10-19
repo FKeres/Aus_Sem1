@@ -32,7 +32,7 @@
         List<Key> keys4 = [key7, key8];
         */
         
-        //KDTree<string> tree = new KDTree<string>();
+        //KDTree<int> tree = new KDTree<int>();
         
         //List<Key> keys1 = [new Key(23), new Key(35)];
         //tree.AddElement(keys1, "Nitra");
@@ -53,43 +53,46 @@
         tree.AddElement(keys6, "Hodonín");
         */
         /*
-        List<Key> keys7 = [new Key(24), new Key(36)];
-        tree.AddElement(keys7, "Tlmače - úrad");
+        List<Key> keys7 = [new Key(6), new Key(76)];
+        tree.AddElement(keys7, 1);
 
-        List<Key> keys8 = [new Key(24), new Key(34)];
-        tree.AddElement(keys8, "Tlmače");
+        List<Key> keys8 = [new Key(52), new Key(45)];
+        tree.AddElement(keys8, 2);
 
-        List<Key> keys9 = [new Key(24), new Key(35)];
-        tree.AddElement(keys9, "Tlmače - nem.");
+        List<Key> keys9 = [new Key(51), new Key(48)];
+        tree.AddElement(keys9, 3);
 
-        List<Key> keys10 = [new Key(30), new Key(33)];
-        tree.AddElement(keys10, "Levice");
+        List<Key> keys10 = [new Key(44), new Key(75)];
+        tree.AddElement(keys10, 4);
 
-         List<Key> keys15 = [new Key(30), new Key(33)];
-        tree.AddElement(keys10, "Levice úr");
+         List<Key> keys11 = [new Key(71), new Key(84)];
+        tree.AddElement(keys11, 5);
 
-        List<Key> keys11 = [new Key(24), new Key(40)];
-        tree.AddElement(keys11, "Tlmače - parkovisko");
+        List<Key> keys12 = [new Key(63), new Key(94)];
+        tree.AddElement(keys12, 6);
 
-        List<Key> keys13 = [new Key(29), new Key(46)];
-        tree.AddElement(keys13, "Bojnice");
+        List<Key> keys13 = [new Key(8), new Key(79)];
+        tree.AddElement(keys13, 7);
 
-        List<Key> keys14 = [new Key(27), new Key(43)];
-        tree.AddElement(keys14, "Nováky");
+        List<Key> keys14 = [new Key(42), new Key(85)];
+        tree.AddElement(keys14, 8);
+        
+        
+        
+        List<Key> keys1 = [new Key(42), new Key(86)];
+        tree.AddElement(keys1, 9);
+
+        List<Key> keys2 = [new Key(43), new Key(96)];
+        tree.AddElement(keys2, 10);
+        
+        List<Key> keys3 = [new Key(43), new Key(96)];
+        tree.AddElement(keys3, 11);
         */
-        
         /*
-        List<Key> keys1 = [new Key(20), new Key(30)];
-        tree.AddElement(keys1, "13");
-
-        List<Key> keys2 = [new Key(19), new Key(50)];
-        tree.AddElement(keys2, "7");
-        
-        List<Key> keys3 = [new Key(22), new Key(20)];
-        tree.AddElement(keys3, "16");
-
         List<Key> keys4 = [new Key(23), new Key(19)];
         tree.AddElement(keys4, "15");
+
+        
 
         List<Key> keys5 = [new Key(23), new Key(19)];
         tree.AddElement(keys5, "14");
@@ -129,14 +132,15 @@
 
         List<Key> keys17 = [new Key(20), new Key(60)];
         tree.AddElement(keys17, "11");
-
-        List<string> list = tree.InOrder();
+        
+        tree.RemoveElement(keys8);
+        List<Node<int>> list = tree.InOrder();
 
         foreach(var element in list) {
-            Console.WriteLine(element);
+            Console.WriteLine(element.Data);
         }
+        
         */
-
         //tree.RemoveElement(keys1);
         /*
         Test test = new Test(1000000, 2);
@@ -148,8 +152,15 @@
         */
         
         all();
+        //Test test = new Test(50, 2, 213182);
+        //bool answer = test.TestOperations();
         //test(755);
-        
+
+
+        /*
+          Test test = new Test(1000000, 2);
+          Console.WriteLine(test.TestInsertionTime().ToString());
+        */
         
        
     }
@@ -157,7 +168,7 @@
     public static void all() {
         int i = 1;
         while(true) {
-            Test test = new Test(9, 2, i);
+            Test test = new Test(100000, 2, i);
             bool answer = test.TestOperations();
             Console.WriteLine(i);
             if(!answer) {
@@ -169,7 +180,7 @@
 
     public static void test(int num) {
          
-        Test test = new Test(9, 2, num);
+        Test test = new Test(100000, 2, num);
         bool answer = test.TestOperations();
         Console.WriteLine(answer); 
         

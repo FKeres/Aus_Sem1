@@ -456,7 +456,9 @@ class KDTree<T>
                     replacingNodes = FIndMinForDimension(nodeToBeRemoved.Dimension, nodeToBeRemoved.RightN);
                     if(replacingNodes.Count > 1) {
                         for (int i = 1; i < replacingNodes.Count; ++i) {
-                            nodesToRemove.Add(replacingNodes[i]);
+                            if(!nodesToRemove.Contains(replacingNodes[i])) {
+                                nodesToRemove.Add(replacingNodes[i]);
+                            }
                         }
                     }
                     ReplaceNodes(nodeToBeRemoved, replacingNodes[0]);
