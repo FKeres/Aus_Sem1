@@ -107,11 +107,14 @@ class Test
         List<Node<int>> treeList = _tree.InOrder();
         stopwatch.Stop();
         Console.WriteLine("inorder done - " + stopwatch.Elapsed);
-
-        List<Node<int>> levelList = _tree.LevelOrder();
-
+        
         if((_list is not null && treeList is not null)){ 
-            if(_list.Count == treeList.Count && _list.Count == levelList.Count) {
+            if(_list.Count == treeList.Count) {
+                foreach(var listItem in _list) {
+                    if(_tree.FindNode(listItem.Keys)[0] is null) {
+                        return false;
+                    }
+                }
                 return true;
             }
         }else if ((_list is  null && treeList is  null) || (_list.Count == 0 && treeList is null)) {
