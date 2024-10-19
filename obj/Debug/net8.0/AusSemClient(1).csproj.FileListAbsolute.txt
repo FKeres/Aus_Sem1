@@ -27,3 +27,4 @@ C:\Users\fikesk\C#Projects\AusSemClient(1)\obj\Debug\net8.0\refint\AusSemClient(
 C:\Users\fikesk\C#Projects\AusSemClient(1)\obj\Debug\net8.0\AusSemClient(1).pdb
 C:\Users\fikesk\C#Projects\AusSemClient(1)\obj\Debug\net8.0\AusSemClient(1).genruntimeconfig.cache
 C:\Users\fikesk\C#Projects\AusSemClient(1)\obj\Debug\net8.0\ref\AusSemClient(1).dll
+C:\Users\fikesk\C#Projects\AusSemClient(1)\obj\Debug\net8.0\AusSemClient(1).sourcelink.json
