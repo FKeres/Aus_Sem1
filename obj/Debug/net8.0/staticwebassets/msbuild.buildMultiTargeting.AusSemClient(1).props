@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\AusSemClient(1).props" />
+</Project>
