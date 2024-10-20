@@ -7,8 +7,9 @@
 <h1>Properties</h1>
 
 <button class="btn btn-primary" @onclick="ShowAddPropertyDialog">Add Property</button>
+<button class="btn btn-primary" @onclick="ShowSearchPropertyDialog">Search with GPS</button>
 
-@if (_propertyTree == null)
+@if (_propertiesToShow.Count == 0)
 {
     <p><em>Loading...</em></p>
 }
@@ -30,7 +31,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var property in _propertyTree.InOrderIter())
+            @foreach (var property in _propertiesToShow)
             {
                 <tr>
                     <td>@property.InventNo</td>
@@ -48,7 +49,7 @@ else
         </tbody>
     </table>
 }
-@if (isDialogVisible)
+@if (isAddDialogVisible)
 {
     <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
         <div class="modal-dialog">
@@ -108,39 +109,55 @@ else
     </div>
 }
 
+@if (isSearchDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Property</h5>
+                    <button type="button" class="btn-close" @onclick="CloseSearchPropertyDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="gpsWToSearch" class="form-label">GPS width position</label>
+                        <input type="number" class="form-control" id="gpsWToSearch" @bind="_gpsWToSearch" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsLToSearch" class="form-label">GPS length position</label>
+                        <input type="number" class="form-control" id="gpsLToSearch" @bind="_gpsLToSearch" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseSearchPropertyDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="SearchProperty">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
-    private KDTree<Property>? _propertyTree;
-    private bool isDialogVisible = false;
+    private List<Property> _propertiesToShow = new List<Property>(); 
+    private bool isAddDialogVisible = false;
+    private bool isSearchDialogVisible = false;
     private int _inventNo;
     private string? _propDesc;
     private char _gps1Width, _gps1Length;
     private char _gps2Width, _gps2Length;
+    private double _gpsWToSearch, _gpsLToSearch;
     private double _gps1WidthPosition, _gps1LengthPosition;
     private double _gps2WidthPosition, _gps2LengthPosition;
 
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    void ShowAddPropertyDialog()
     {
-        Console.WriteLine("increment");  
-        currentCount++;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _propertyTree = PropertyService.GetAllProperties();
-
-    }
-
-    async Task ShowAddPropertyDialog()
-    {
-        isDialogVisible = true;
+        isAddDialogVisible = true;
         StateHasChanged();
     }
 
     void CloseAddPropertyDialog()
     {
-        isDialogVisible = false;
+        isAddDialogVisible = false;
         StateHasChanged();
     }
 
@@ -148,6 +165,25 @@ else
     {
         Property newProperty = new Property(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         PropertyService.AddProperty(newProperty);
+        isAddDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowSearchPropertyDialog()
+    {
+        isSearchDialogVisible = true;
+        StateHasChanged();
+    }
+
+     void CloseSearchPropertyDialog()
+    {
+        isSearchDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void SearchProperty() {
+        _propertiesToShow = PropertyService.SearchProperties(_gpsWToSearch, _gpsLToSearch);
+        isSearchDialogVisible = false;
         StateHasChanged();
     }
 }

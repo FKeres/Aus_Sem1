@@ -39,4 +39,13 @@ public class PropertyService
         List<Key> keys2 = [key3, key4];
         _propertyTree.AddElement(keys2, property);
     }
+
+    internal List<Property> SearchProperties(double gpsWToSearch, double gpsLToSearch) {
+        Key key1 = new Key(gpsWToSearch);
+        Key key2 = new Key(gpsLToSearch);
+
+        List<Key> keys = [key1, key2];
+
+        return _propertyTree.FindElement(keys);
+    }
 }
