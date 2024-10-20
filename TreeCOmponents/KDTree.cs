@@ -1,6 +1,7 @@
+using System.Collections;
 using Microsoft.VisualBasic;
 
-class KDTree<T>
+class KDTree<T> : IEnumerable<T>
 {
     #region Attributes
     private Node<T>? _root;
@@ -286,6 +287,52 @@ class KDTree<T>
     }
 
     /// <summary>
+    /// returns sorted list by keys of tree elements  in order
+    /// </summary>
+    /// <returns>List<typeparamref name="T"/></returns>
+    public IEnumerable<T> InOrderIter() {
+        if (_root is null) {
+            yield break;
+        }
+
+        var actualNode = _root;
+        bool allProcessed = false;
+
+        while(!allProcessed) {
+
+            mostLeft:
+            while(actualNode.HasLeftSon()) {
+                actualNode = actualNode.LeftN;
+            }
+
+            yield return actualNode.Data;
+
+            checkRight:
+            if(actualNode.HasRightSon()) {
+                actualNode = actualNode.RightN;
+                goto mostLeft;
+            }
+
+            upstairs:
+            if(actualNode.ImLeft) {
+                actualNode = actualNode.Parent;
+                yield return actualNode.Data;
+                goto checkRight;
+            } else {
+                actualNode = actualNode.Parent;
+                if(!(actualNode == _root)) {
+                    if(actualNode is not null) {
+                        goto upstairs;
+                    }
+                }
+                allProcessed = true;
+            }
+
+        }
+
+    }
+
+    /// <summary>
     /// returns sorted list by keys of tree elements  in level order
     /// </summary>
     /// <returns>List<typeparamref name="T"/></returns>
@@ -313,6 +360,36 @@ class KDTree<T>
         }
 
         return items;
+    }
+
+    /// <summary>
+    /// returns iteratble by keys of tree elements  in level order
+    /// </summary>
+    /// <returns>List<typeparamref name="T"/></returns>
+    public IEnumerable<T> LevelOrderIter() {
+         if (_root is null) {
+            yield break;
+        }
+
+        Node<T> actualNode;
+        List<Node<T>> items = [_root];
+        int indexITP = 0;
+
+        while(indexITP < items.Count) {
+            actualNode = items[indexITP];
+            yield return actualNode.Data;
+
+            if(actualNode.HasLeftSon()) {
+                items.Add(actualNode.LeftN);
+            }
+
+            if(actualNode.HasRightSon()) {
+                items.Add(actualNode.RightN);
+            }
+
+            ++indexITP;
+        }
+
     }
 
     /// <summary>
@@ -648,6 +725,16 @@ class KDTree<T>
         }
 
         return keys.Count == _root.Keys.Count;
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        throw new NotImplementedException();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        throw new NotImplementedException();
     }
     #endregion
 
