@@ -1,7 +1,144 @@
 ﻿@page "/"
+@inject ParcelService ParcelService
+@inject PropertyService PropertyService
+@rendermode InteractiveServer
 
 <PageTitle>All</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>All</h1>
 
-Welcome to your new app.
+<button class="btn btn-primary" @onclick="ShowSearchAllDialog">Search with GPS</button>
+
+@if (_parcelsToShow.Count == 0 && _propertiesToShow.Count == 0)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if (_parcelsToShow == null && _propertiesToShow == null)
+    {
+        <p><em>No teritorial units to display</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>TU Identification number</th>
+                    <th>TU description</th>
+                    <th>GPS1 width</th>
+                    <th>GPS1 width position</th>
+                    <th>GPS1 length</th>
+                    <th>GPS2 length position</th>
+                    <th>GPS2 width</th>
+                    <th>GPS2 width position</th>
+                    <th>GPS2 length</th>
+                    <th>GPS2 length position</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (_parcelsToShow != null) 
+                {
+                    @foreach (var parcel in _parcelsToShow)
+                    {
+                        <tr>
+                            <td>@parcel.ParcNo</td>
+                            <td>@parcel.ParcDesc</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[0].Width</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[0].Length</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[1].Width</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[1].Length</td>
+                            <td>@parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                        </tr>
+                    }
+                }
+                @if (_propertiesToShow != null) 
+                {
+                    @foreach (var property in _propertiesToShow)
+                    {
+                        <tr>
+                            <td>@property.InventNo</td>
+                            <td>@property.PropDesc</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[0].Width</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[0].Length</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[1].Width</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
+                            <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+}
+@if (isSearchDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Parcel</h5>
+                    <button type="button" class="btn-close" @onclick="CloseSearchAllDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="gpsWToSearch" class="form-label">GPS width position</label>
+                        <input type="number" class="form-control" id="gpsWToSearch" @bind="_gpsWToSearch" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsLToSearch" class="form-label">GPS length position</label>
+                        <input type="number" class="form-control" id="gpsLToSearch" @bind="_gpsLToSearch" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseSearchAllDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="SearchAll">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Parcel> _parcelsToShow = new List<Parcel>(); 
+    private List<Property> _propertiesToShow = new List<Property>(); 
+    private double _gpsWToSearch, _gpsLToSearch;
+    private bool isSearchDialogVisible = false;
+
+    void ShowSearchParcelDialog()
+    {
+        isSearchDialogVisible = true;
+        StateHasChanged();
+    }
+
+
+    void SearchAll() {
+        _parcelsToShow = ParcelService.SearchParcels(_gpsWToSearch, _gpsLToSearch);
+        _propertiesToShow = PropertyService.SearchProperties(_gpsWToSearch, _gpsLToSearch);
+        isSearchDialogVisible = false;
+        _gpsWToSearch = 0.0;
+        _gpsLToSearch = 0.0;
+        StateHasChanged();
+    }
+
+    void ShowSearchAllDialog()
+    {
+        isSearchDialogVisible = true;
+        StateHasChanged();
+    }
+
+     void CloseSearchAllDialog()
+    {
+        isSearchDialogVisible = false;
+        _gpsWToSearch = 0.0;
+        _gpsLToSearch = 0.0;
+        StateHasChanged();
+    }
+}
+}
