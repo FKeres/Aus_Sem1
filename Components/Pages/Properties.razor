@@ -1,13 +1,14 @@
 ﻿@page "/properties"
-@attribute [StreamRendering]
+@inject PropertyService PropertyService
+@rendermode InteractiveServer
 
 <PageTitle>Properties</PageTitle>
 
 <h1>Properties</h1>
 
-<p>This component demonstrates showing data.</p>
+<button class="btn btn-primary" @onclick="ShowAddPropertyDialog">Add Property</button>
 
-@if (forecasts == null)
+@if (_propertyTree == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -16,49 +17,137 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Inventory number</th>
+                <th>Property description</th>
+                <th>GPS1 width</th>
+                <th>GPS1 width position</th>
+                <th>GPS1 length</th>
+                <th>GPS2 length position</th>
+                <th>GPS2 width</th>
+                <th>GPS2 width position</th>
+                <th>GPS2 length</th>
+                <th>GPS2 length position</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var property in _propertyTree.InOrderIter())
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@property.InventNo</td>
+                    <td>@property.PropDesc</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[0].Width</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[0].Length</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[1].Width</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
+                    <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
                 </tr>
             }
         </tbody>
     </table>
 }
+@if (isDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Property</h5>
+                    <button type="button" class="btn-close" @onclick="CloseAddPropertyDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="inventNo" class="form-label">Inventory number</label>
+                        <input type="text" class="form-control" id="inventNo" @bind="_inventNo" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="propDesc" class="form-label">Property description</label>
+                        <input type="text" class="form-control" id="propDesc" @bind="_propDesc" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1Width" class="form-label">GPS1 width</label>
+                        <input type="text" class="form-control" id="gps1Width" @bind="_gps1Width" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1WidthPosition" class="form-label">GPS1 width position</label>
+                        <input type="number" class="form-control" id="gps1WidthPosition" @bind="_gps1WidthPosition" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1Length" class="form-label">GPS1 length</label>
+                        <input type="text" class="form-control" id="gps1Length" @bind="_gps1Length" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1LengthPosition" class="form-label">GPS1 length position</label>
+                        <input type="number" class="form-control" id="gps1LengthPosition" @bind="_gps1LengthPosition" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2Width" class="form-label">GPS2 width</label>
+                        <input type="text" class="form-control" id="gps2Width" @bind="_gps2Width" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2WidthPosition" class="form-label">GPS2 width position</label>
+                        <input type="number" class="form-control" id="gps2WidthPosition" @bind="_gps2WidthPosition" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2Length" class="form-label">GPS2 length</label>
+                        <input type="text" class="form-control" id="gps2Length" @bind="_gps2Length" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2LengthPosition" class="form-label">GPS2 length position</label>
+                        <input type="number" class="form-control" id="gps2LengthPosition" @bind="_gps2LengthPosition" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseAddPropertyDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddProperty">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private KDTree<Property>? _propertyTree;
+    private bool isDialogVisible = false;
+    private int _inventNo;
+    private string? _propDesc;
+    private char _gps1Width, _gps1Length;
+    private char _gps2Width, _gps2Length;
+    private double _gps1WidthPosition, _gps1LengthPosition;
+    private double _gps2WidthPosition, _gps2LengthPosition;
+
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        Console.WriteLine("increment");  
+        currentCount++;
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(500);
+        _propertyTree = PropertyService.GetAllProperties();
 
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
     }
 
-    private class WeatherForecast
+    async Task ShowAddPropertyDialog()
     {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        isDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseAddPropertyDialog()
+    {
+        isDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void AddProperty()
+    {
+        Property newProperty = new Property(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
+        PropertyService.AddProperty(newProperty);
+        StateHasChanged();
     }
 }

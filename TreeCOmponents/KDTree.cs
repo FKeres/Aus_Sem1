@@ -188,7 +188,7 @@ class KDTree<T> : IEnumerable<T>
 
     }
 
-        /// <summary>
+    /// <summary>
     /// finds elements by given keys
     /// </summary>
     /// <param name="keys"></param>
