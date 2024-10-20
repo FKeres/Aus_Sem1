@@ -6,6 +6,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<PropertyService>();
+builder.Services.AddScoped<ParcelService>();
 
 var app = builder.Build();
 

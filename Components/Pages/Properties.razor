@@ -15,39 +15,46 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Inventory number</th>
-                <th>Property description</th>
-                <th>GPS1 width</th>
-                <th>GPS1 width position</th>
-                <th>GPS1 length</th>
-                <th>GPS2 length position</th>
-                <th>GPS2 width</th>
-                <th>GPS2 width position</th>
-                <th>GPS2 length</th>
-                <th>GPS2 length position</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var property in _propertiesToShow)
-            {
+    @if (_propertiesToShow == null)
+    {
+        <p><em>No parcels to display</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@property.InventNo</td>
-                    <td>@property.PropDesc</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[0].Width</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[0].Length</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[1].Width</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
-                    <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                    <th>Inventory number</th>
+                    <th>Property description</th>
+                    <th>GPS1 width</th>
+                    <th>GPS1 width position</th>
+                    <th>GPS1 length</th>
+                    <th>GPS2 length position</th>
+                    <th>GPS2 width</th>
+                    <th>GPS2 width position</th>
+                    <th>GPS2 length</th>
+                    <th>GPS2 length position</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var property in _propertiesToShow)
+                {
+                    <tr>
+                        <td>@property.InventNo</td>
+                        <td>@property.PropDesc</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].Width</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].Length</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].Width</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
 @if (isAddDialogVisible)
 {
@@ -158,6 +165,16 @@ else
     void CloseAddPropertyDialog()
     {
         isAddDialogVisible = false;
+        _inventNo = 0;
+        _propDesc = ""; 
+        _gps1Width = '-';
+        _gps1WidthPosition = 0.0;
+        _gps1Length = '-';
+        _gps1LengthPosition = 0.0;
+        _gps2Width = '-';
+        _gps2WidthPosition = 0.0;
+        _gps2Length = '-';
+        _gps2LengthPosition = 0.0;
         StateHasChanged();
     }
 
@@ -166,6 +183,16 @@ else
         Property newProperty = new Property(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         PropertyService.AddProperty(newProperty);
         isAddDialogVisible = false;
+        _inventNo = 0;
+        _propDesc = ""; 
+        _gps1Width = '-';
+        _gps1WidthPosition = 0.0;
+        _gps1Length = '-';
+        _gps1LengthPosition = 0.0;
+        _gps2Width = '-';
+        _gps2WidthPosition = 0.0;
+        _gps2Length = '-';
+        _gps2LengthPosition = 0.0;
         StateHasChanged();
     }
 
@@ -178,12 +205,16 @@ else
      void CloseSearchPropertyDialog()
     {
         isSearchDialogVisible = false;
+        _gpsWToSearch = 0.0;
+        _gpsLToSearch = 0.0;
         StateHasChanged();
     }
 
     void SearchProperty() {
         _propertiesToShow = PropertyService.SearchProperties(_gpsWToSearch, _gpsLToSearch);
         isSearchDialogVisible = false;
+        _gpsWToSearch = 0.0;
+        _gpsLToSearch = 0.0;
         StateHasChanged();
     }
 }

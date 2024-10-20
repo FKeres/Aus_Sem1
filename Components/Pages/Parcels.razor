@@ -1,19 +1,220 @@
 ﻿@page "/parcels"
+@inject ParcelService ParcelService
 @rendermode InteractiveServer
 
 <PageTitle>Parcels</PageTitle>
 
 <h1>Parcels</h1>
 
-<p role="status">Current count: @currentCount</p>
+<button class="btn btn-primary" @onclick="ShowAddParcelDialog">Add parcel</button>
+<button class="btn btn-primary" @onclick="ShowSearchParcelDialog">Search with GPS</button>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+@if (_parcelsToShow.Count == 0)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if (_parcelsToShow == null)
+    {
+        <p><em>No parcels to display</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Parcel number</th>
+                    <th>Parcel description</th>
+                    <th>GPS1 width</th>
+                    <th>GPS1 width position</th>
+                    <th>GPS1 length</th>
+                    <th>GPS2 length position</th>
+                    <th>GPS2 width</th>
+                    <th>GPS2 width position</th>
+                    <th>GPS2 length</th>
+                    <th>GPS2 length position</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var parcel in _parcelsToShow)
+                {
+                    <tr>
+                        <td>@parcel.ParcNo</td>
+                        <td>@parcel.ParcDesc</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[0].Width</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[0].Length</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[1].Width</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[1].Length</td>
+                        <td>@parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+@if (isAddDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Parcel</h5>
+                    <button type="button" class="btn-close" @onclick="CloseAddParcelDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="inventNo" class="form-label">Inventory number</label>
+                        <input type="text" class="form-control" id="inventNo" @bind="_parcNo" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="parcpDesc" class="form-label">Parcel description</label>
+                        <input type="text" class="form-control" id="parcDesc" @bind="_parcDesc" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1Width" class="form-label">GPS1 width</label>
+                        <input type="text" class="form-control" id="gps1Width" @bind="_gps1Width" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1WidthPosition" class="form-label">GPS1 width position</label>
+                        <input type="number" class="form-control" id="gps1WidthPosition" @bind="_gps1WidthPosition" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1Length" class="form-label">GPS1 length</label>
+                        <input type="text" class="form-control" id="gps1Length" @bind="_gps1Length" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps1LengthPosition" class="form-label">GPS1 length position</label>
+                        <input type="number" class="form-control" id="gps1LengthPosition" @bind="_gps1LengthPosition" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2Width" class="form-label">GPS2 width</label>
+                        <input type="text" class="form-control" id="gps2Width" @bind="_gps2Width" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2WidthPosition" class="form-label">GPS2 width position</label>
+                        <input type="number" class="form-control" id="gps2WidthPosition" @bind="_gps2WidthPosition" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2Length" class="form-label">GPS2 length</label>
+                        <input type="text" class="form-control" id="gps2Length" @bind="_gps2Length" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gps2LengthPosition" class="form-label">GPS2 length position</label>
+                        <input type="number" class="form-control" id="gps2LengthPosition" @bind="_gps2LengthPosition" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseAddParcelDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="AddParcel">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isSearchDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Parcel</h5>
+                    <button type="button" class="btn-close" @onclick="CloseSearchParcelDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="gpsWToSearch" class="form-label">GPS width position</label>
+                        <input type="number" class="form-control" id="gpsWToSearch" @bind="_gpsWToSearch" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsLToSearch" class="form-label">GPS length position</label>
+                        <input type="number" class="form-control" id="gpsLToSearch" @bind="_gpsLToSearch" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseSearchParcelDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="SearchParcel">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
-    private int currentCount = 0;
+    private List<Parcel> _parcelsToShow = new List<Parcel>(); 
+    private bool isAddDialogVisible = false;
+    private bool isSearchDialogVisible = false;
+    private int _parcNo;
+    private string? _parcDesc;
+    private char _gps1Width, _gps1Length;
+    private char _gps2Width, _gps2Length;
+    private double _gpsWToSearch, _gpsLToSearch;
+    private double _gps1WidthPosition, _gps1LengthPosition;
+    private double _gps2WidthPosition, _gps2LengthPosition;
 
-    private void IncrementCount()
+    void ShowAddParcelDialog()
     {
-        currentCount++;
+        isAddDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseAddParcelDialog()
+    {
+        isAddDialogVisible = false;
+        _parcNo = 0;
+        _parcDesc = ""; 
+        _gps1Width = '-';
+        _gps1WidthPosition = 0.0;
+        _gps1Length = '-';
+        _gps1LengthPosition = 0.0;
+        _gps2Width = '-';
+        _gps2WidthPosition = 0.0;
+        _gps2Length = '-';
+        _gps2LengthPosition = 0.0;
+        StateHasChanged();
+    }
+
+    void AddParcel()
+    {
+        Parcel newParcel = new Parcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
+        ParcelService.AddParcel(newParcel);
+        isAddDialogVisible = false;
+        _parcNo = 0;
+        _parcDesc = ""; 
+        _gps1Width = '-';
+        _gps1WidthPosition = 0.0;
+        _gps1Length = '-';
+        _gps1LengthPosition = 0.0;
+        _gps2Width = '-';
+        _gps2WidthPosition = 0.0;
+        _gps2Length = '-';
+        _gps2LengthPosition = 0.0;
+        StateHasChanged();
+    }
+
+    void ShowSearchParcelDialog()
+    {
+        isSearchDialogVisible = true;
+        StateHasChanged();
+    }
+
+     void CloseSearchParcelDialog()
+    {
+        isSearchDialogVisible = false;
+        _gpsWToSearch = 0.0;
+        _gpsLToSearch = 0.0;
+        StateHasChanged();
+    }
+
+    void SearchParcel() {
+        _parcelsToShow = ParcelService.SearchParcels(_gpsWToSearch, _gpsLToSearch);
+        isSearchDialogVisible = false;
+        _gpsWToSearch = 0.0;
+        _gpsLToSearch = 0.0;
+        StateHasChanged();
     }
 }
