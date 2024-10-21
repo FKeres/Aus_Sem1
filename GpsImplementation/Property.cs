@@ -71,6 +71,21 @@ class Property :TerritorialUnit<Parcel>
     public void RemoveParcel(int position) {
         this.RemoveListElement(position);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Property other)
+        {
+            return _inventNo == other.InventNo && _propDesc == other.PropDesc;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_inventNo, _propDesc);
+    }
+
     #endregion
 
 }

@@ -1,6 +1,5 @@
 ﻿@page "/"
-@inject ParcelService ParcelService
-@inject PropertyService PropertyService
+@inject HomeService HomeService
 @rendermode InteractiveServer
 
 <PageTitle>All</PageTitle>
@@ -9,13 +8,13 @@
 
 <button class="btn btn-primary" @onclick="ShowSearchAllDialog">Search with GPS</button>
 
-@if ((_parcelsToShow1 == null && _propertiesToShow1 == null && _parcelsToShow2 == null && _propertiesToShow2 == null) || (_parcelsToShow1.Count == 0 && _propertiesToShow1.Count == 0 && _parcelsToShow2.Count == 0 && _propertiesToShow2.Count == 0))
+@if ((_propParcHolder == null && _propParcHolder1 == null) || (_propParcHolder.Count == 0 && _propParcHolder1.Count == 0))
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    @if (_parcelsToShow1 == null && _propertiesToShow1 == null && _parcelsToShow2 == null && _propertiesToShow2 == null)
+    @if (_propParcHolder == null && _propParcHolder1 == null)
     {
         <p><em>No teritorial units to display</em></p>
     }
@@ -37,76 +36,70 @@ else
                 </tr>
             </thead>
             <tbody>
-                @if (_parcelsToShow1 != null) 
+                @if (_propParcHolder != null) 
                 {
-                    @foreach (var parcel in _parcelsToShow1)
+                    @foreach (var propParc in _propParcHolder)
                     {
-                        <tr>
-                            <td>@parcel.ParcNo</td>
-                            <td>@parcel.ParcDesc</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[0].Width</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[0].Length</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[1].Width</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[1].Length</td>
-                            <td>@parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
-                        </tr>
+                        @if(propParc.Parcel != null) {
+                            <tr>
+                                <td>@propParc.Parcel.ParcNo</td>
+                                <td>@propParc.Parcel.ParcDesc</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[0].Width</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[0].Length</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[1].Width</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[1].Length</td>
+                                <td>@propParc.Parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                            </tr>
+                        } else {
+                            <tr>
+                                <td>@propParc.Property.InventNo</td>
+                                <td>@propParc.Property.PropDesc</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[0].Width</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[0].Length</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[1].Width</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[1].Length</td>
+                                <td>@propParc.Property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                            </tr>
+                        }
                     }
                 }
-                @if (_parcelsToShow2 != null) 
+                @if (_propParcHolder1 != null) 
                 {
-                    @foreach (var parcel2 in _parcelsToShow2)
+                    @foreach (var propParc1 in _propParcHolder1)
                     {
-                        <tr>
-                            <td>@parcel2.ParcNo</td>
-                            <td>@parcel2.ParcDesc</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].Width</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].Length</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].Width</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].Length</td>
-                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
-                        </tr>
-                    }
-                }
-                @if (_propertiesToShow1 != null) 
-                {
-                    @foreach (var property in _propertiesToShow1)
-                    {
-                        <tr>
-                            <td>@property.InventNo</td>
-                            <td>@property.PropDesc</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[0].Width</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[0].Length</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[1].Width</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
-                            <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
-                        </tr>
-                    }
-                }
-                @if (_propertiesToShow2 != null) 
-                {
-                    @foreach (var property2 in _propertiesToShow2)
-                    {
-                        <tr>
-                            <td>@property2.InventNo</td>
-                            <td>@property2.PropDesc</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[0].Width</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[0].Length</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[1].Width</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[1].Length</td>
-                            <td>@property2.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
-                        </tr>
+                        @if(propParc1.Parcel != null) {
+                            <tr>
+                                <td>@propParc1.Parcel.ParcNo</td>
+                                <td>@propParc1.Parcel.ParcDesc</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[0].Width</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[0].Length</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[1].Width</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[1].Length</td>
+                                <td>@propParc1.Parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                            </tr>
+                        } else {
+                            <tr>
+                                <td>@propParc1.Property.InventNo</td>
+                                <td>@propParc1.Property.PropDesc</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[0].Width</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[0].Length</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[1].Width</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[1].Length</td>
+                                <td>@propParc1.Property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                            </tr>
+                        }
                     }
                 }
             </tbody>
@@ -150,10 +143,8 @@ else
 }
 
 @code {
-    private List<Parcel> _parcelsToShow1 = new List<Parcel>(); 
-    private List<Parcel> _parcelsToShow2 = new List<Parcel>(); 
-    private List<Property> _propertiesToShow1 = new List<Property>(); 
-    private List<Property> _propertiesToShow2 = new List<Property>();
+    private List<PropParcHolder> _propParcHolder = new List<PropParcHolder>();
+    private List<PropParcHolder> _propParcHolder1 = new List<PropParcHolder>();
     private double _gpsWToSearch1, _gpsLToSearch1, _gpsWToSearch2, _gpsLToSearch2;
     private bool isSearchDialogVisible = false;
 
@@ -165,10 +156,8 @@ else
 
 
     void SearchAll() {
-        _parcelsToShow1 = ParcelService.SearchParcels(_gpsWToSearch1, _gpsLToSearch1);
-        _parcelsToShow2 = ParcelService.SearchParcels(_gpsWToSearch2, _gpsLToSearch2);
-        _propertiesToShow1 = PropertyService.SearchProperties(_gpsWToSearch1, _gpsLToSearch1);
-        _propertiesToShow2 = PropertyService.SearchProperties(_gpsWToSearch2, _gpsLToSearch2);
+        _propParcHolder = HomeService.SearchAll(_gpsWToSearch1, _gpsLToSearch1);
+        _propParcHolder1 = HomeService.SearchAll(_gpsWToSearch2, _gpsLToSearch2);
         isSearchDialogVisible = false;
         _gpsWToSearch1 = 0.0;
         _gpsLToSearch1 = 0.0;

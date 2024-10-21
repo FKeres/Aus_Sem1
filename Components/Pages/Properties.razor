@@ -1,5 +1,6 @@
 ﻿@page "/properties"
 @inject PropertyService PropertyService
+@inject HomeService HomeService
 @rendermode InteractiveServer
 
 <PageTitle>Properties</PageTitle>
@@ -249,6 +250,7 @@ else
     {
         Property newProperty = new Property(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         PropertyService.AddProperty(newProperty);
+        HomeService.AddProperty(newProperty);
         isAddDialogVisible = false;
         _inventNo = 0;
         _propDesc = ""; 
