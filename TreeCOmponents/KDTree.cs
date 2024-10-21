@@ -188,7 +188,7 @@ class KDTree<T> : IEnumerable<T>
 
     }
 
-        /// <summary>
+    /// <summary>
     /// finds elements by given keys
     /// </summary>
     /// <param name="keys"></param>
@@ -214,6 +214,56 @@ class KDTree<T> : IEnumerable<T>
 
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys)) {
+                    items.Add(actualNode);
+                }
+
+                if (actualNode.HasLeftSon()) {
+                    actualNode = actualNode.LeftN;
+                } else {
+                    itemsFound = true;
+                }
+
+            } else {
+                if (actualNode.HasRightSon()) {
+                    actualNode = actualNode.RightN;
+                } else {
+                    itemsFound = true;
+                }
+            }
+
+            ++actualCompNodeLevel;
+        }
+
+        return items;
+
+    }
+
+    /// <summary>
+    /// finds elements by given keys
+    /// </summary>
+    /// <param name="keys"></param>
+    /// <returns>List<T></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public List<Node<T>> FindExactNode(List<Key> keys, T data) {
+        if (!CheckKeyDimensionsFromK(keys)) {
+            throw new ArgumentException("Key List does not contain correct number of dimensions.");
+        }
+
+        if (_root is null) {
+            return null;
+        }
+
+        bool itemsFound = false;
+        var actualNode = _root;
+        int actualCompNodeLevel = 0;
+        int compResult;
+        List<Node<T>> items = new List<Node<T>>();
+
+        while(!itemsFound) {
+            compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+
+            if(compResult <= 0) {
+                if(compResult == 0 && KeysMatch(actualNode, keys) && ReferenceEquals(actualNode.Data, data)) {
                     items.Add(actualNode);
                 }
 
@@ -515,6 +565,20 @@ class KDTree<T> : IEnumerable<T>
     public void RemoveElement(List<Key> keys) {
         List<Node<T>> nodesToBeRemoved = new List<Node<T>>();
         nodesToBeRemoved = FindNode(keys);
+        if(nodesToBeRemoved is not null) {
+            foreach(var node in nodesToBeRemoved) {
+                RemoveNode(node);
+            }
+        }
+    }
+
+    /// <summary>
+    /// removes element from tree with given keys and data
+    /// </summary>
+    /// <param name="keys, data"></param>
+    public void RemoveExactElement(List<Key> keys, T data) {
+        List<Node<T>> nodesToBeRemoved = new List<Node<T>>();
+        nodesToBeRemoved = FindExactNode(keys, data);
         if(nodesToBeRemoved is not null) {
             foreach(var node in nodesToBeRemoved) {
                 RemoveNode(node);
