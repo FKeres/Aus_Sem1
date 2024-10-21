@@ -35,4 +35,25 @@ public class ParcelService
 
         return _parcelTree.FindElement(keys);
     }
+
+    internal void RemoveParcel(Parcel parcel) {
+        Key key1 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition);
+        Key key2 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+
+        List<Key> keys = [key1, key2];
+
+        _parcelTree.RemoveExactElement(keys, parcel);
+
+        Key key3 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition);
+        Key key4 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+
+        List<Key> keys2 = [key3, key4];
+
+        _parcelTree.RemoveExactElement(keys2, parcel);
+    }
+
+    internal void EditParcel(Parcel parcel) {
+
+    }
+    
 }

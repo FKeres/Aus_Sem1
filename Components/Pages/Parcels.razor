@@ -50,6 +50,8 @@ else
                         <td>@parcel.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
                         <td>@parcel.GpsPosHandler.GpsPositioons[1].Length</td>
                         <td>@parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                        <td><button class="btn btn-primary" @onclick="() => ShowEditParcel(parcel)">Edit</button></td>
+                        <td><button class="btn btn-primary" @onclick="() => RemoveParcel(parcel)">Remove</button></td>
                     </tr>
                 }
             </tbody>
@@ -116,6 +118,69 @@ else
     </div>
 }
 
+@if (isEditDialogVisible)
+{
+    @if (_editParcel != null) {
+        <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Parcel</h5>
+                        <button type="button" class="btn-close" @onclick="CloseEditParcelDialog"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="inventNo" class="form-label">Inventory number</label>
+                            <input type="text" class="form-control" id="inventNo" @bind="_editParcel.ParcNo" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="parcpDesc" class="form-label">Parcel description</label>
+                            <input type="text" class="form-control" id="parcDesc" @bind="_editParcel.ParcDesc" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1Width" class="form-label">GPS1 width</label>
+                            <input type="text" class="form-control" id="gps1Width" @bind="_editParcel.GpsPosHandler.GpsPositioons[0].Width" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1WidthPosition" class="form-label">GPS1 width position</label>
+                            <input type="number" class="form-control" id="gps1WidthPosition" @bind="_editParcel.GpsPosHandler.GpsPositioons[0].WidthPosition" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1Length" class="form-label">GPS1 length</label>
+                            <input type="text" class="form-control" id="gps1Length" @bind="_editParcel.GpsPosHandler.GpsPositioons[0].Length" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1LengthPosition" class="form-label">GPS1 length position</label>
+                            <input type="number" class="form-control" id="gps1LengthPosition" @bind="_editParcel.GpsPosHandler.GpsPositioons[0].LengthPosition" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2Width" class="form-label">GPS2 width</label>
+                            <input type="text" class="form-control" id="gps2Width" @bind="_editParcel.GpsPosHandler.GpsPositioons[1].Width" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2WidthPosition" class="form-label">GPS2 width position</label>
+                            <input type="number" class="form-control" id="gps2WidthPosition" @bind="_editParcel.GpsPosHandler.GpsPositioons[1].WidthPosition" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2Length" class="form-label">GPS2 length</label>
+                            <input type="text" class="form-control" id="gps2Length" @bind="_editParcel.GpsPosHandler.GpsPositioons[1].Length" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2LengthPosition" class="form-label">GPS2 length position</label>
+                            <input type="number" class="form-control" id="gps2LengthPosition" @bind="_editParcel.GpsPosHandler.GpsPositioons[1].LengthPosition" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseEditParcelDialog">Cancel</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => EditParcel(_editParcel)">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
 @if (isSearchDialogVisible)
 {
     <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
@@ -146,8 +211,10 @@ else
 
 @code {
     private List<Parcel> _parcelsToShow = new List<Parcel>(); 
+    private Parcel? _editParcel;
     private bool isAddDialogVisible = false;
     private bool isSearchDialogVisible = false;
+    private bool isEditDialogVisible = false;
     private int _parcNo;
     private string? _parcDesc;
     private char _gps1Width, _gps1Length;
@@ -215,6 +282,28 @@ else
         isSearchDialogVisible = false;
         _gpsWToSearch = 0.0;
         _gpsLToSearch = 0.0;
+        StateHasChanged();
+    }
+
+    void RemoveParcel(Parcel parcel) {
+        ParcelService.RemoveParcel(parcel);
+        StateHasChanged();
+    }
+
+    void EditParcel(Parcel parcel) {
+        ParcelService.EditParcel(parcel);
+        isEditDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowEditParcel(Parcel parcel) {
+        _editParcel = parcel;
+        isEditDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseEditParcelDialog() {
+        isEditDialogVisible = false;
         StateHasChanged();
     }
 }
