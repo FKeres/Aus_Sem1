@@ -35,4 +35,24 @@ public class PropertyService
 
         return _propertyTree.FindElement(keys);
     }
+
+    internal void RemoveProperty(Property property) {
+        Key key1 = new Key(property.GpsPosHandler.GetGpsPosition(0).WidthPosition);
+        Key key2 = new Key(property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+
+        List<Key> keys = [key1, key2];
+
+        _propertyTree.RemoveExactElement(keys, property);
+
+        Key key3 = new Key(property.GpsPosHandler.GetGpsPosition(1).WidthPosition);
+        Key key4 = new Key(property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+
+        List<Key> keys2 = [key3, key4];
+
+        _propertyTree.RemoveExactElement(keys2, property);
+    }
+
+    internal void EditProperty(Property property) {
+
+    }
 }

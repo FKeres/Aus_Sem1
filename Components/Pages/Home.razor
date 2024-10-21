@@ -9,13 +9,13 @@
 
 <button class="btn btn-primary" @onclick="ShowSearchAllDialog">Search with GPS</button>
 
-@if ((_parcelsToShow == null && _propertiesToShow == null) || (_parcelsToShow.Count == 0 && _propertiesToShow.Count == 0))
+@if ((_parcelsToShow1 == null && _propertiesToShow1 == null && _parcelsToShow2 == null && _propertiesToShow2 == null) || (_parcelsToShow1.Count == 0 && _propertiesToShow1.Count == 0 && _parcelsToShow2.Count == 0 && _propertiesToShow2.Count == 0))
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    @if (_parcelsToShow == null && _propertiesToShow == null)
+    @if (_parcelsToShow1 == null && _propertiesToShow1 == null && _parcelsToShow2 == null && _propertiesToShow2 == null)
     {
         <p><em>No teritorial units to display</em></p>
     }
@@ -37,9 +37,9 @@ else
                 </tr>
             </thead>
             <tbody>
-                @if (_parcelsToShow != null) 
+                @if (_parcelsToShow1 != null) 
                 {
-                    @foreach (var parcel in _parcelsToShow)
+                    @foreach (var parcel in _parcelsToShow1)
                     {
                         <tr>
                             <td>@parcel.ParcNo</td>
@@ -55,9 +55,27 @@ else
                         </tr>
                     }
                 }
-                @if (_propertiesToShow != null) 
+                @if (_parcelsToShow2 != null) 
                 {
-                    @foreach (var property in _propertiesToShow)
+                    @foreach (var parcel2 in _parcelsToShow2)
+                    {
+                        <tr>
+                            <td>@parcel2.ParcNo</td>
+                            <td>@parcel2.ParcDesc</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].Width</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].Length</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].Width</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].Length</td>
+                            <td>@parcel2.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                        </tr>
+                    }
+                }
+                @if (_propertiesToShow1 != null) 
+                {
+                    @foreach (var property in _propertiesToShow1)
                     {
                         <tr>
                             <td>@property.InventNo</td>
@@ -70,6 +88,24 @@ else
                             <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
                             <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
                             <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                        </tr>
+                    }
+                }
+                @if (_propertiesToShow2 != null) 
+                {
+                    @foreach (var property2 in _propertiesToShow2)
+                    {
+                        <tr>
+                            <td>@property2.InventNo</td>
+                            <td>@property2.PropDesc</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[0].Width</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[0].Length</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[1].Width</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[1].Length</td>
+                            <td>@property2.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
                         </tr>
                     }
                 }
@@ -88,12 +124,20 @@ else
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="gpsWToSearch" class="form-label">GPS width position</label>
-                        <input type="number" class="form-control" id="gpsWToSearch" @bind="_gpsWToSearch" />
+                        <label for="gpsWToSearch1" class="form-label">GPS1 width position</label>
+                        <input type="number" class="form-control" id="gpsWToSearch1" @bind="_gpsWToSearch1" />
                     </div>
                     <div class="mb-3">
-                        <label for="gpsLToSearch" class="form-label">GPS length position</label>
-                        <input type="number" class="form-control" id="gpsLToSearch" @bind="_gpsLToSearch" />
+                        <label for="gpsLToSearch1" class="form-label">GPS1 length position</label>
+                        <input type="number" class="form-control" id="gpsLToSearch1" @bind="_gpsLToSearch1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsWToSearch2" class="form-label">GPS2 width position</label>
+                        <input type="number" class="form-control" id="gpsWToSearch2" @bind="_gpsWToSearch2" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsLToSearch2" class="form-label">GPS2 length position</label>
+                        <input type="number" class="form-control" id="gpsLToSearch2" @bind="_gpsLToSearch2" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -106,9 +150,11 @@ else
 }
 
 @code {
-    private List<Parcel> _parcelsToShow = new List<Parcel>(); 
-    private List<Property> _propertiesToShow = new List<Property>(); 
-    private double _gpsWToSearch, _gpsLToSearch;
+    private List<Parcel> _parcelsToShow1 = new List<Parcel>(); 
+    private List<Parcel> _parcelsToShow2 = new List<Parcel>(); 
+    private List<Property> _propertiesToShow1 = new List<Property>(); 
+    private List<Property> _propertiesToShow2 = new List<Property>();
+    private double _gpsWToSearch1, _gpsLToSearch1, _gpsWToSearch2, _gpsLToSearch2;
     private bool isSearchDialogVisible = false;
 
     void ShowSearchParcelDialog()
@@ -119,11 +165,15 @@ else
 
 
     void SearchAll() {
-        _parcelsToShow = ParcelService.SearchParcels(_gpsWToSearch, _gpsLToSearch);
-        _propertiesToShow = PropertyService.SearchProperties(_gpsWToSearch, _gpsLToSearch);
+        _parcelsToShow1 = ParcelService.SearchParcels(_gpsWToSearch1, _gpsLToSearch1);
+        _parcelsToShow2 = ParcelService.SearchParcels(_gpsWToSearch2, _gpsLToSearch2);
+        _propertiesToShow1 = PropertyService.SearchProperties(_gpsWToSearch1, _gpsLToSearch1);
+        _propertiesToShow2 = PropertyService.SearchProperties(_gpsWToSearch2, _gpsLToSearch2);
         isSearchDialogVisible = false;
-        _gpsWToSearch = 0.0;
-        _gpsLToSearch = 0.0;
+        _gpsWToSearch1 = 0.0;
+        _gpsLToSearch1 = 0.0;
+        _gpsWToSearch2 = 0.0;
+        _gpsLToSearch2 = 0.0;
         StateHasChanged();
     }
 
@@ -136,8 +186,10 @@ else
      void CloseSearchAllDialog()
     {
         isSearchDialogVisible = false;
-        _gpsWToSearch = 0.0;
-        _gpsLToSearch = 0.0;
+        _gpsWToSearch1 = 0.0;
+        _gpsLToSearch1 = 0.0;
+        _gpsWToSearch2 = 0.0;
+        _gpsLToSearch2 = 0.0;
         StateHasChanged();
     }
 }

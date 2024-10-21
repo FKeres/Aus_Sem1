@@ -50,6 +50,8 @@ else
                         <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
                         <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
                         <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                        <td><button class="btn btn-info" @onclick="() => ShowEditProperty(property)">Edit</button></td>
+                        <td><button class="btn btn-danger" @onclick="() => RemoveProperty(property)">Remove</button></td>
                     </tr>
                 }
             </tbody>
@@ -116,6 +118,69 @@ else
     </div>
 }
 
+
+@if (isEditDialogVisible)
+{
+    @if (_editProperty != null) {
+        <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Parcel</h5>
+                        <button type="button" class="btn-close" @onclick="CloseEditPropertyDialog"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="inventNo" class="form-label">Inventory number</label>
+                            <input type="text" class="form-control" id="inventNo" @bind="_editProperty.InventNo" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="parcpDesc" class="form-label">Parcel description</label>
+                            <input type="text" class="form-control" id="parcDesc" @bind="_editProperty.PropDesc" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1Width" class="form-label">GPS1 width</label>
+                            <input type="text" class="form-control" id="gps1Width" @bind="_editProperty.GpsPosHandler.GpsPositioons[0].Width" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1WidthPosition" class="form-label">GPS1 width position</label>
+                            <input type="number" class="form-control" id="gps1WidthPosition" @bind="_editProperty.GpsPosHandler.GpsPositioons[0].WidthPosition" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1Length" class="form-label">GPS1 length</label>
+                            <input type="text" class="form-control" id="gps1Length" @bind="_editProperty.GpsPosHandler.GpsPositioons[0].Length" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps1LengthPosition" class="form-label">GPS1 length position</label>
+                            <input type="number" class="form-control" id="gps1LengthPosition" @bind="_editProperty.GpsPosHandler.GpsPositioons[0].LengthPosition" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2Width" class="form-label">GPS2 width</label>
+                            <input type="text" class="form-control" id="gps2Width" @bind="_editProperty.GpsPosHandler.GpsPositioons[1].Width" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2WidthPosition" class="form-label">GPS2 width position</label>
+                            <input type="number" class="form-control" id="gps2WidthPosition" @bind="_editProperty.GpsPosHandler.GpsPositioons[1].WidthPosition" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2Length" class="form-label">GPS2 length</label>
+                            <input type="text" class="form-control" id="gps2Length" @bind="_editProperty.GpsPosHandler.GpsPositioons[1].Length" maxlength="1" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gps2LengthPosition" class="form-label">GPS2 length position</label>
+                            <input type="number" class="form-control" id="gps2LengthPosition" @bind="_editProperty.GpsPosHandler.GpsPositioons[1].LengthPosition" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseEditPropertyDialog">Cancel</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => EditProperty(_editProperty)">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
 @if (isSearchDialogVisible)
 {
     <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
@@ -147,7 +212,9 @@ else
 @code {
     private List<Property> _propertiesToShow = new List<Property>(); 
     private bool isAddDialogVisible = false;
+    private bool isEditDialogVisible = false;
     private bool isSearchDialogVisible = false;
+    private Property? _editProperty;
     private int _inventNo;
     private string? _propDesc;
     private char _gps1Width, _gps1Length;
@@ -215,6 +282,28 @@ else
         isSearchDialogVisible = false;
         _gpsWToSearch = 0.0;
         _gpsLToSearch = 0.0;
+        StateHasChanged();
+    }
+
+    void RemoveProperty(Property property) {
+    PropertyService.RemoveProperty(property);
+    StateHasChanged();
+    }
+
+    void EditProperty(Property property) {
+        PropertyService.EditProperty(property);
+        isEditDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowEditProperty(Property property) {
+        _editProperty = property;
+        isEditDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseEditPropertyDialog() {
+        isEditDialogVisible = false;
         StateHasChanged();
     }
 }

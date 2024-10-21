@@ -50,8 +50,8 @@ else
                         <td>@parcel.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
                         <td>@parcel.GpsPosHandler.GpsPositioons[1].Length</td>
                         <td>@parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
-                        <td><button class="btn btn-primary" @onclick="() => ShowEditParcel(parcel)">Edit</button></td>
-                        <td><button class="btn btn-primary" @onclick="() => RemoveParcel(parcel)">Remove</button></td>
+                        <td><button class="btn btn-info" @onclick="() => ShowEditParcel(parcel)">Edit</button></td>
+                        <td><button class="btn btn-danger" @onclick="() => RemoveParcel(parcel)">Remove</button></td>
                     </tr>
                 }
             </tbody>
@@ -172,7 +172,7 @@ else
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @onclick="CloseEditParcelDialog">Cancel</button>
-                        <button type="button" class="btn btn-primary" @onclick="() => EditParcel(_editParcel)">Add</button>
+                        <button type="button" class="btn btn-primary" @onclick="() => EditParcel(_editParcel)">Edit</button>
                     </div>
                 </div>
             </div>
