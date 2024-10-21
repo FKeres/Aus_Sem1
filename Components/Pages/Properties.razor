@@ -9,7 +9,7 @@
 <button class="btn btn-primary" @onclick="ShowAddPropertyDialog">Add Property</button>
 <button class="btn btn-primary" @onclick="ShowSearchPropertyDialog">Search with GPS</button>
 
-@if (_propertiesToShow.Count == 0)
+@if (_propertiesToShow == null || _propertiesToShow.Count == 0)
 {
     <p><em>Loading...</em></p>
 }
