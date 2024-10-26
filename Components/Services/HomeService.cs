@@ -15,6 +15,7 @@ public class HomeService
 
     internal void AddParcel(int actualParcId, int parcNo, string parcDesc, char gps1Width, double gps1WidthPosition, char gps1Length, double gps1LengthPosition, char gps2Width, double gps2WidthPosition, char gps2Length, double gps2LengthPosition)
     {
+        Console.WriteLine("Added to Home");
         Parcel parcel = new Parcel(actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
         PropParcHolder holder = new PropParcHolder();
         holder.Parcel = parcel;
@@ -61,13 +62,19 @@ public class HomeService
         List<PropParcHolder> copyHolderList = new List<PropParcHolder>();
 
         foreach(var actualHolder in _tree.FindElement(keys)) {
-            Parcel copyParcel = new Parcel(actualHolder.Parcel.ParcelId, actualHolder.Parcel.ParcNo, actualHolder.Parcel.ParcDesc, actualHolder.Parcel.GpsPosHandler.GpsPositioons);
-            Property copyProperty = new Property(actualHolder.Property.PropertyId, actualHolder.Property.InventNo, actualHolder.Property.PropDesc, actualHolder.Property.GpsPosHandler.GpsPositioons);
-
-            PropParcHolder copyholder = new PropParcHolder();
-            copyholder.Parcel = copyParcel;
-            copyholder.Property = copyProperty;
-            copyHolderList.Add(copyholder);
+            if(actualHolder is not null) {
+                PropParcHolder copyholder = new PropParcHolder();
+                if(actualHolder.Parcel is not null) {
+                    Parcel copyParcel = new Parcel(actualHolder.Parcel.ParcelId, actualHolder.Parcel.ParcNo, actualHolder.Parcel.ParcDesc, actualHolder.Parcel.GpsPosHandler.GpsPositioons);
+                    copyholder.Parcel = copyParcel;
+                } 
+                if(actualHolder.Property is not null) {
+                    Property copyProperty = new Property(actualHolder.Property.PropertyId, actualHolder.Property.InventNo, actualHolder.Property.PropDesc, actualHolder.Property.GpsPosHandler.GpsPositioons);
+                    copyholder.Property = copyProperty;
+                }
+                
+                copyHolderList.Add(copyholder);
+            }
         }
 
         return copyHolderList;

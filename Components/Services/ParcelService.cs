@@ -36,6 +36,7 @@ public class ParcelService
 
         List<Key> keys2 = [key3, key4];
         _parcelTree.AddElement(keys2, parcel);
+        Console.WriteLine("Call Home Service");
         _home.AddParcel(_actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
 
         ++_actualParcId;
@@ -49,8 +50,10 @@ public class ParcelService
 
         List<Parcel> copyParcels = new List<Parcel>();
         foreach(var copyParc in _parcelTree.FindElement(keys)) {
-            Parcel copyParcel = new Parcel(copyParc.ParcelId, copyParc.ParcNo, copyParc.ParcDesc, copyParc.GpsPosHandler.GpsPositioons);
-            copyParcels.Add(copyParcel);
+            if(copyParc is not null) {
+                Parcel copyParcel = new Parcel(copyParc.ParcelId, copyParc.ParcNo, copyParc.ParcDesc, copyParc.GpsPosHandler.GpsPositioons);
+                copyParcels.Add(copyParcel);
+            }
         }
 
         return copyParcels;

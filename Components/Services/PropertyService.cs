@@ -47,7 +47,15 @@ public class PropertyService
         
         List<Key> keys = [new Key(gpsWToSearch),  new Key(gpsLToSearch)];
 
-        return _propertyTree.FindElement(keys);
+        List<Property> copyProperties = new List<Property>();
+        foreach(var copyProp in _propertyTree.FindElement(keys)) {
+            if(copyProp is not null) {
+                Property copyProperty = new Property(copyProp.PropertyId, copyProp.InventNo, copyProp.PropDesc, copyProp.GpsPosHandler.GpsPositioons);
+                copyProperties.Add(copyProperty);
+            }
+        }
+
+        return copyProperties;
     }
 
     internal void RemoveProperty(Property property) {

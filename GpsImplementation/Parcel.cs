@@ -1,4 +1,4 @@
-class Parcel :TerritorialUnit<Parcel>
+class Parcel :TerritorialUnit<Property>
 {
     #region Attributes
 
@@ -67,11 +67,11 @@ class Parcel :TerritorialUnit<Parcel>
         }
     }
 
-    public void AddProperty( Parcel property) {
+    public void AddProperty( Property property) {
         this.AddListElement(property);
     }
 
-    public Parcel GetProperty(int position) {
+    public Property GetProperty(int position) {
         return this.GetListItem(position);
     }
 
