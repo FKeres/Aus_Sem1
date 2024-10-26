@@ -249,9 +249,8 @@ else
 
     void AddParcel()
     {
-        Parcel newParcel = new Parcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
-        ParcelService.AddParcel(newParcel);
-        HomeService.AddParcel(newParcel);
+        ParcelService.AddParcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
+        HomeService.AddParcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         isAddDialogVisible = false;
         _parcNo = 0;
         _parcDesc = ""; 
@@ -295,32 +294,16 @@ else
     }
 
     void EditParcel(Parcel parcel) {
-        if(parcel.ParcNo != 0) {
-            _originalParc.ParcNo = parcel.ParcNo;
-        }
-        if(parcel.ParcDesc != "") {
-            _originalParc.ParcDesc = parcel.ParcDesc;
-        }
-        _originalParc.GpsPosHandler.GetGpsPosition(0).Width = parcel.GpsPosHandler.GetGpsPosition(0).Width;
-        _originalParc.GpsPosHandler.GetGpsPosition(1).Width = parcel.GpsPosHandler.GetGpsPosition(1).Width;
-        _originalParc.GpsPosHandler.GetGpsPosition(0).Length = parcel.GpsPosHandler.GetGpsPosition(0).Length;
-        _originalParc.GpsPosHandler.GetGpsPosition(1).Width = parcel.GpsPosHandler.GetGpsPosition(1).Width;
-
-        if(_originalParc.GpsPosHandler.GetGpsPosition(0).WidthPosition != parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition ||
-            _originalParc.GpsPosHandler.GetGpsPosition(1).WidthPosition != parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition ||
-            _originalParc.GpsPosHandler.GetGpsPosition(0).LengthPosition != parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition ||
-            _originalParc.GpsPosHandler.GetGpsPosition(1).LengthPosition != parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition) {
-
-            ParcelService.EditParcel(_originalParc, parcel);
-
-        }
-
+        
+        ParcelService.EditParcel(_originalParc, parcel);
+        HomeService.EditParcel(_originalParc, parcel);
         isEditDialogVisible = false;
         StateHasChanged();
     }
 
     void ShowEditParcel(Parcel parcel) {
-        _editParcel = parcel;
+        _originalParc = parcel;
+        _editParcel = new Parcel(parcel.ParcelId, parcel.ParcNo, parcel.ParcDesc, parcel.GpsPosHandler.GpsPositioons);
         isEditDialogVisible = true;
         StateHasChanged();
     }

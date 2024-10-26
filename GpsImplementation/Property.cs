@@ -2,6 +2,7 @@ class Property :TerritorialUnit<Parcel>
 {
     #region Attributes
 
+    private int _propertyId;
     private int _inventNo;
     private string? _propDesc;
     private GpsPosHandler _gpsPosHandler;
@@ -10,14 +11,15 @@ class Property :TerritorialUnit<Parcel>
 
     #region Constructor
 
-    public Property(int inventNo, string? propDesc, GpsPosition[] gpsPositions)
+    public Property(int propertyId, int inventNo, string? propDesc, GpsPosition[] gpsPositions)
     {
+        _propertyId = propertyId;
         _inventNo = inventNo;
         _propDesc = propDesc;
         _gpsPosHandler = new GpsPosHandler(gpsPositions);
     }
 
-    public Property(int inventNo, string propDesc, char width1, double widthPosition1, char length1, double lengthPosition1, char width2, double widthPosition2, char length2, double lengthPosition2)
+    public Property(int propertyId, int inventNo, string propDesc, char width1, double widthPosition1, char length1, double lengthPosition1, char width2, double widthPosition2, char length2, double lengthPosition2)
     {
         GpsPosition[] gpsPositions = new GpsPosition[2];
         GpsPosition gps1 = new GpsPosition(width1, widthPosition1, length1, lengthPosition1);
@@ -26,13 +28,15 @@ class Property :TerritorialUnit<Parcel>
         gpsPositions[0] = gps1;
         gpsPositions[1] = gps2;
 
+        _propertyId = propertyId;
         _inventNo = inventNo;
         _propDesc = propDesc;
         _gpsPosHandler = new GpsPosHandler(gpsPositions);
     }
 
-    public Property(int inventNo, string? propDesc)
+    public Property(int propertyId, int inventNo, string? propDesc)
     {
+        _propertyId = propertyId;
         _inventNo = inventNo;
         _propDesc = propDesc;
         _gpsPosHandler = new GpsPosHandler();
@@ -45,6 +49,7 @@ class Property :TerritorialUnit<Parcel>
     public int InventNo { get => _inventNo; set => _inventNo = value; }
     public string? PropDesc { get => _propDesc; set => _propDesc = value; }
     internal GpsPosHandler GpsPosHandler { get => _gpsPosHandler; set => _gpsPosHandler = value; }
+    public int PropertyId { get => _propertyId; set => _propertyId = value; }
     #endregion
 
     #region Methods
@@ -76,14 +81,14 @@ class Property :TerritorialUnit<Parcel>
     {
         if (obj is Property other)
         {
-            return _inventNo == other.InventNo && _propDesc == other.PropDesc;
+            return _propertyId == other.PropertyId;
         }
         return false;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_inventNo, _propDesc);
+        return HashCode.Combine(_propertyId);
     }
 
     #endregion
