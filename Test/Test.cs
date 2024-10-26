@@ -252,6 +252,8 @@ class Test
                 foreach(var keyVar in node.Keys) {
                     Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
                 }
+
+                Console.WriteLine();
                 _list.Add(node);
 
             } else if (operation == 0 ){
@@ -268,7 +270,8 @@ class Test
                     foreach(var keyVar in keys) {
                         Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
                     }
-                    //Console.WriteLine("find - " + stopwatch.Elapsed  + " " + i + " key 0 " + keys[0].KeyAttr + "key 1 " + keys[1].KeyAttr);
+
+                    Console.WriteLine();
                 }
             } else if(operation == 2) {
                 if(_list.Count != 0) {
@@ -279,22 +282,19 @@ class Test
                     stopwatch.Start();
                     _tree.AddNode(node);
                     stopwatch.Stop();
-                    Console.WriteLine("insert : " + stopwatch.Elapsed + " - Data - " + i);
+                    Console.WriteLine("insert duplicate  : " + stopwatch.Elapsed + " - Data - " + i);
                     foreach(var keyVar in node.Keys) {
                         Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
                     }
-                    //Console.WriteLine("insert - " + stopwatch.Elapsed + " " + i + " Node " + node.Data + " key 0 " + node.Keys[0].KeyAttr + " key 1 " + node.Keys[1].KeyAttr);
+                    Console.WriteLine();
+
                     _list.Add(node);
                 }
             } else {
                 
                 List<Key> keys = new List<Key>();
                 int data;
-                /*
-                for(int j = 0; j < _treeDimension; ++j) {
-                   keys.Add(GenerateKey());
-                }
-                */
+
                 if(keyList.Count != 0) {
                     int rand = random.Next(keyList.Count);
                     keys = keyList[rand];
@@ -308,7 +308,7 @@ class Test
                     foreach(var keyVar in keys) {
                         Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
                     }
-                    //Console.WriteLine("remove - " + stopwatch.Elapsed  + " " + i + " key 0 " + keys[0].KeyAttr + "key 1 " + keys[1].KeyAttr);
+                    Console.WriteLine();
 
                     if(deletion is not null) {
                         foreach(var del in deletion) {
@@ -325,6 +325,10 @@ class Test
         List<Node<int>> treeList = _tree.InOrder();
         stopwatch.Stop();
         Console.WriteLine("inorder done - " + stopwatch.Elapsed);
+
+        foreach(var inorderIt in _tree.InOrderIter()) {
+            Console.WriteLine(inorderIt.ToString());
+        }
         
         if((_list is not null && treeList is not null)){ 
             if(_list.Count == treeList.Count) {
@@ -371,10 +375,10 @@ class Test
     public int GenerateOperation() {
         double number = random.NextDouble();
         
-        if(number < 0.6) {
+        if(number < 0.5) {
             return 1;
         }
-        else if(number >= 0.6 && number < 0.7) 
+        else if(number >= 0.5 && number < 0.7) 
         {
             return 2;
         }

@@ -1,18 +1,20 @@
+using System.Text;
+
 public class ParcelService
 {
     private KDTree<Parcel> _parcelTree;
     private int _actualParcId;
+    private HomeService _home;
+    private readonly Random random;
 
-    public ParcelService()
+    public ParcelService(HomeService homeService)
     {
+        Console.WriteLine("ParcelService Constructor Called");
+        _home = homeService;
         _parcelTree = new KDTree<Parcel>();
         _actualParcId = 0;
-    }
-
-    public ParcelService(int actualParcId)
-    {
-        _parcelTree = new KDTree<Parcel>();
-        _actualParcId = actualParcId;
+        random = new Random();
+        GenerateParc();
     }
 
     internal KDTree<Parcel> GetAllParcels()
@@ -34,6 +36,8 @@ public class ParcelService
 
         List<Key> keys2 = [key3, key4];
         _parcelTree.AddElement(keys2, parcel);
+        _home.AddParcel(_actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
+
         ++_actualParcId;
     }
 
@@ -128,5 +132,33 @@ public class ParcelService
             }
         }
 
+        _home.EditParcel(oldParc, newParc);
+
+    }
+
+    public void GenerateParc() {
+        char[] directions = { 'N', 'S', 'W', 'E' };
+
+        for(int i = 0; i < 50; ++i) {
+            double gpsW1 = Math.Round(random.NextDouble() * 50,2);
+            double gpsL1 = Math.Round(random.NextDouble() * 50,2);
+            double gpsW2 = Math.Round(random.NextDouble() * 50,2);
+            double gpsL2 = Math.Round(random.NextDouble() * 50,2);
+            int parcNo = random.Next(50);
+
+            int maxLeng = 10;
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            StringBuilder stringBuilder = new StringBuilder(maxLeng);
+
+            for (int j = 0; j < maxLeng; j++)
+            {
+                int index = random.Next(chars.Length);
+                stringBuilder.Append(chars[index]);
+            }
+
+            string parcDesc = stringBuilder.ToString();
+            Console.WriteLine("Key1 " + gpsW1 + " Key2 " + gpsL1);
+            AddParcel(parcNo, parcDesc, directions[random.Next(directions.Length)], gpsW1, directions[random.Next(directions.Length)], gpsL1, directions[random.Next(directions.Length)], gpsW2, directions[random.Next(directions.Length)], gpsL2);
+        }
     }
 }

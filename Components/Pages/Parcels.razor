@@ -1,6 +1,5 @@
 ﻿@page "/parcels"
 @inject ParcelService ParcelService
-@inject HomeService HomeService
 @rendermode InteractiveServer
 
 <PageTitle>Parcels</PageTitle>
@@ -250,7 +249,7 @@ else
     void AddParcel()
     {
         ParcelService.AddParcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
-        HomeService.AddParcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
+        //HomeService.AddParcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         isAddDialogVisible = false;
         _parcNo = 0;
         _parcDesc = ""; 
@@ -289,14 +288,14 @@ else
 
     void RemoveParcel(Parcel parcel) {
         ParcelService.RemoveParcel(parcel);
-        HomeService.RemoveParc(parcel);
+        //HomeService.RemoveParc(parcel);
         StateHasChanged();
     }
 
     void EditParcel(Parcel parcel) {
         
         ParcelService.EditParcel(_originalParc, parcel);
-        HomeService.EditParcel(_originalParc, parcel);
+        //HomeService.EditParcel(_originalParc, parcel);
         isEditDialogVisible = false;
         StateHasChanged();
     }

@@ -7,6 +7,7 @@
 <h1>All</h1>
 
 <button class="btn btn-primary" @onclick="ShowSearchAllDialog">Search with GPS</button>
+<button class="btn btn-danger" @onclick="ShowTestDialog">Test operations</button>
 
 @if ((_propParcHolder == null && _propParcHolder1 == null) || (_propParcHolder.Count == 0 && _propParcHolder1.Count == 0))
 {
@@ -142,11 +143,37 @@ else
     </div>
 }
 
+@if (isTestDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Search Parcel</h5>
+                    <button type="button" class="btn-close" @onclick="CloseTestDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="operNum" class="form-label">Number of operations</label>
+                        <input type="number" class="form-control" id="operNum" @bind="_operNum" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseTestDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="TestOperations">Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private List<PropParcHolder> _propParcHolder = new List<PropParcHolder>();
     private List<PropParcHolder> _propParcHolder1 = new List<PropParcHolder>();
     private double _gpsWToSearch1, _gpsLToSearch1, _gpsWToSearch2, _gpsLToSearch2;
     private bool isSearchDialogVisible = false;
+    private bool isTestDialogVisible = false;
+    private int _operNum;
 
     void ShowSearchParcelDialog()
     {
@@ -179,6 +206,23 @@ else
         _gpsLToSearch1 = 0.0;
         _gpsWToSearch2 = 0.0;
         _gpsLToSearch2 = 0.0;
+        StateHasChanged();
+    }
+
+    void ShowTestDialog()
+    {
+        isTestDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseTestDialog() {
+        isTestDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void TestOperations() {
+        HomeService.TestOperations(_operNum);
+        isTestDialogVisible = false;
         StateHasChanged();
     }
 }

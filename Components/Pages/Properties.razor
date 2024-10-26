@@ -1,6 +1,5 @@
 ﻿@page "/properties"
 @inject PropertyService PropertyService
-@inject HomeService HomeService
 @rendermode InteractiveServer
 
 <PageTitle>Properties</PageTitle>
@@ -251,7 +250,7 @@ else
     void AddProperty()
     {   
         PropertyService.AddProperty(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
-        HomeService.AddProperty(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
+        //HomeService.AddProperty(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         isAddDialogVisible = false;
         _inventNo = 0;
         _propDesc = ""; 
@@ -290,13 +289,13 @@ else
 
     void RemoveProperty(Property property) {
         PropertyService.RemoveProperty(property);
-        HomeService.RemoveProp(property);
+        //HomeService.RemoveProp(property);
         StateHasChanged();
     }
 
     void EditProperty(Property property) {
         PropertyService.EditProperty(_originalProp, property);
-        HomeService.EditProperty(_originalProp, property);
+        //HomeService.EditProperty(_originalProp, property);
         isEditDialogVisible = false;
         StateHasChanged();
     }

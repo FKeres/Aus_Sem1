@@ -1,21 +1,11 @@
 public class HomeService
 {
     private KDTree<PropParcHolder> _tree;
-    private int _actualPropId;
-    private int _actualParcId;
 
     public HomeService()
     {
+        Console.WriteLine("HomeService Constructor Called");
         _tree = new KDTree<PropParcHolder>();
-        _actualPropId = 0;
-        _actualParcId = 0;
-    }
-
-    public HomeService(int actualParcId, int actualPropId)
-    {
-        _tree = new KDTree<PropParcHolder>();
-        _actualParcId = actualParcId;
-        _actualPropId = actualPropId;
     }
 
     internal KDTree<PropParcHolder> GetAllParcels()
@@ -23,9 +13,9 @@ public class HomeService
         return _tree;
     }
 
-    internal void AddParcel(int parcNo, string parcDesc, char gps1Width, double gps1WidthPosition, char gps1Length, double gps1LengthPosition, char gps2Width, double gps2WidthPosition, char gps2Length, double gps2LengthPosition)
+    internal void AddParcel(int actualParcId, int parcNo, string parcDesc, char gps1Width, double gps1WidthPosition, char gps1Length, double gps1LengthPosition, char gps2Width, double gps2WidthPosition, char gps2Length, double gps2LengthPosition)
     {
-        Parcel parcel = new Parcel(_actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
+        Parcel parcel = new Parcel(actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
         PropParcHolder holder = new PropParcHolder();
         holder.Parcel = parcel;
 
@@ -40,12 +30,11 @@ public class HomeService
 
         List<Key> keys2 = [key3, key4];
         _tree.AddElement(keys2, holder);
-        ++_actualParcId;
     }
 
-    internal void AddProperty(int inventNo, string propDesc, char gps1Width, double gps1WidthPosition, char gps1Length, double gps1LengthPosition, char gps2Width, double gps2WidthPosition, char gps2Length, double gps2LengthPosition)
+    internal void AddProperty(int actualPropId, int inventNo, string propDesc, char gps1Width, double gps1WidthPosition, char gps1Length, double gps1LengthPosition, char gps2Width, double gps2WidthPosition, char gps2Length, double gps2LengthPosition)
     {
-        Property property = new Property(_actualPropId, inventNo, propDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
+        Property property = new Property(actualPropId, inventNo, propDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
         PropParcHolder holder = new PropParcHolder();
         holder.Property = property;
 
@@ -61,7 +50,6 @@ public class HomeService
         List<Key> keys2 = [key3, key4];
         _tree.AddElement(keys2, holder);
         
-        ++_actualPropId;
     }
 
     internal List<PropParcHolder> SearchAll(double gpsWToSearch, double gpsLToSearch) {
@@ -254,5 +242,13 @@ public class HomeService
 
     }
 
+    public void TestOperations(int operationCount) {
+        Test test = new Test(operationCount, 4);
+        test.TestOperationsKont2();
+    }
+
+    public void GenerareParProp() {
+
+    }
 
 }

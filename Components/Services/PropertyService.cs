@@ -1,18 +1,21 @@
+using System.CodeDom.Compiler;
+using System.Text;
+
 public class PropertyService
 {
     private KDTree<Property> _propertyTree;
     private int _actualPropId;
+    private HomeService _home;
+    private readonly Random random;
 
-    public PropertyService()
+    public PropertyService(HomeService homeService)
     {
+        Console.WriteLine("PropertyService Constructor Called");
+        _home = homeService;
         _propertyTree = new KDTree<Property>();
         _actualPropId = 0;
-    }
-
-    public PropertyService(int actualPropId)
-    {
-        _propertyTree = new KDTree<Property>();
-        _actualPropId = actualPropId;
+        random = new Random();
+        GenerateProp();
     }
 
     internal KDTree<Property> GetAllProperties()
@@ -35,6 +38,8 @@ public class PropertyService
 
         List<Key> keys2 = [key3, key4];
         _propertyTree.AddElement(keys2, property);
+        
+        _home.AddProperty(_actualPropId, inventNo, propDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
         ++_actualPropId;
     }
 
@@ -59,6 +64,7 @@ public class PropertyService
         List<Key> keys2 = [key3, key4];
 
         _propertyTree.RemoveExactElement(keys2, property);
+        _home.RemoveProp(property);
     }
 
     internal void EditProperty(Property oldProp, Property newProp) {
@@ -120,6 +126,33 @@ public class PropertyService
 
                 _propertyTree.AddElement(keys4, node1[0].Data);
             }
+        }
+        _home.EditProperty(oldProp, newProp);
+    }
+
+    public void GenerateProp() {
+        char[] directions = { 'N', 'S', 'W', 'E' };
+
+        for(int i = 0; i < 50; ++i) {
+            double gpsW1 = Math.Round(random.NextDouble() * 50,2);
+            double gpsL1 = Math.Round(random.NextDouble() * 50,2);
+            double gpsW2 = Math.Round(random.NextDouble() * 50,2);
+            double gpsL2 = Math.Round(random.NextDouble() * 50,2);
+            int inventNo = random.Next(50);
+
+            int maxLeng = 10;
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            StringBuilder stringBuilder = new StringBuilder(maxLeng);
+
+            for (int j = 0; j < maxLeng; j++)
+            {
+                int index = random.Next(chars.Length);
+                stringBuilder.Append(chars[index]);
+            }
+
+            string propDesc = stringBuilder.ToString();
+            Console.WriteLine("Key1 " + gpsW1 + " Key2 " + gpsL1);
+            AddProperty(inventNo, propDesc, directions[random.Next(directions.Length)], gpsW1, directions[random.Next(directions.Length)], gpsL1, directions[random.Next(directions.Length)], gpsW2, directions[random.Next(directions.Length)], gpsL2);
         }
     }
 }
