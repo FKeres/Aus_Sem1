@@ -248,7 +248,10 @@ class Test
                 stopwatch.Start();
                 _tree.AddNode(node);
                 stopwatch.Stop();
-                //Console.WriteLine("insert - " + stopwatch.Elapsed + " " + i + " Node " + node.Data + " key 0 " + node.Keys[0].KeyAttr + " key 1 " + node.Keys[1].KeyAttr);
+                Console.WriteLine("insert : " + stopwatch.Elapsed + " - Data - " + i);
+                foreach(var keyVar in node.Keys) {
+                    Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                }
                 _list.Add(node);
 
             } else if (operation == 0 ){
@@ -261,6 +264,10 @@ class Test
                     stopwatch.Start();
                     _tree.FindExactNode(keys, data);
                     stopwatch.Stop();
+                    Console.WriteLine("find : " + stopwatch.Elapsed + " - Data - " + data);
+                    foreach(var keyVar in keys) {
+                        Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                    }
                     //Console.WriteLine("find - " + stopwatch.Elapsed  + " " + i + " key 0 " + keys[0].KeyAttr + "key 1 " + keys[1].KeyAttr);
                 }
             } else if(operation == 2) {
@@ -272,6 +279,10 @@ class Test
                     stopwatch.Start();
                     _tree.AddNode(node);
                     stopwatch.Stop();
+                    Console.WriteLine("insert : " + stopwatch.Elapsed + " - Data - " + i);
+                    foreach(var keyVar in node.Keys) {
+                        Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                    }
                     //Console.WriteLine("insert - " + stopwatch.Elapsed + " " + i + " Node " + node.Data + " key 0 " + node.Keys[0].KeyAttr + " key 1 " + node.Keys[1].KeyAttr);
                     _list.Add(node);
                 }
@@ -293,6 +304,10 @@ class Test
                     stopwatch.Start();
                     _tree.RemoveExactElement(keys, data);
                     stopwatch.Stop();
+                    Console.WriteLine("remove : " + stopwatch.Elapsed + " - Data - " + data);
+                    foreach(var keyVar in keys) {
+                        Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                    }
                     //Console.WriteLine("remove - " + stopwatch.Elapsed  + " " + i + " key 0 " + keys[0].KeyAttr + "key 1 " + keys[1].KeyAttr);
 
                     if(deletion is not null) {
@@ -450,6 +465,11 @@ public class Level1 : IComparable<Level1>, IComparable
         }
         throw new ArgumentException("Object is not a Level1");
     }
+
+    public override string ToString()
+    {
+        return $"Level1(B: {_a}, C: {_b})";
+    }
 }
 
 public class Level2 : IComparable<Level2>, IComparable
@@ -481,6 +501,11 @@ public class Level2 : IComparable<Level2>, IComparable
         }
         throw new ArgumentException("Object is not a Level2");
     }
+
+    public override string ToString()
+    {
+        return $"Level2(C: {_c})";
+    }
 }
 
 public class Level3 : IComparable<Level3>, IComparable
@@ -511,6 +536,11 @@ public class Level3 : IComparable<Level3>, IComparable
             return CompareTo(other);
         }
         throw new ArgumentException("Object is not a Level3");
+    }
+
+    public override string ToString()
+    {
+        return $"Level3(D: {_d})";
     }
 }
 
@@ -551,5 +581,10 @@ public class Level4 : IComparable<Level4>, IComparable
             return CompareTo(other);
         }
         throw new ArgumentException("Object is not a Level4");
+    }
+
+    public override string ToString()
+    {
+        return $"Level4(B: {_b}, C: {_c})";
     }
 }
