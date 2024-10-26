@@ -73,6 +73,21 @@ class Parcel :TerritorialUnit<Parcel>
     public void RemoveProperty(int position) {
         this.RemoveListElement(position);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Parcel other)
+        {
+            return _parcNo == other.ParcNo && _parcDesc == other.ParcDesc;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_parcNo, _parcDesc);
+    }
+
     #endregion
 
 }

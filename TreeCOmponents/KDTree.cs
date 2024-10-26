@@ -263,7 +263,7 @@ class KDTree<T> : IEnumerable<T>
             compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
 
             if(compResult <= 0) {
-                if(compResult == 0 && KeysMatch(actualNode, keys) && ReferenceEquals(actualNode.Data, data)) {
+                if(compResult == 0 && KeysMatch(actualNode, keys) && actualNode.Data.Equals(data)) {
                     items.Add(actualNode);
                 }
 

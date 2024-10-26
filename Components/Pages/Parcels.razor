@@ -1,5 +1,6 @@
 ﻿@page "/parcels"
 @inject ParcelService ParcelService
+@inject HomeService HomeService
 @rendermode InteractiveServer
 
 <PageTitle>Parcels</PageTitle>
@@ -212,6 +213,7 @@ else
 @code {
     private List<Parcel> _parcelsToShow = new List<Parcel>(); 
     private Parcel? _editParcel;
+    private Parcel? _originalParc;
     private bool isAddDialogVisible = false;
     private bool isSearchDialogVisible = false;
     private bool isEditDialogVisible = false;
@@ -249,6 +251,7 @@ else
     {
         Parcel newParcel = new Parcel(_parcNo, _parcDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         ParcelService.AddParcel(newParcel);
+        HomeService.AddParcel(newParcel);
         isAddDialogVisible = false;
         _parcNo = 0;
         _parcDesc = ""; 
@@ -287,11 +290,31 @@ else
 
     void RemoveParcel(Parcel parcel) {
         ParcelService.RemoveParcel(parcel);
+        HomeService.RemoveParc(parcel);
         StateHasChanged();
     }
 
     void EditParcel(Parcel parcel) {
-        ParcelService.EditParcel(parcel);
+        if(parcel.ParcNo != 0) {
+            _originalParc.ParcNo = parcel.ParcNo;
+        }
+        if(parcel.ParcDesc != "") {
+            _originalParc.ParcDesc = parcel.ParcDesc;
+        }
+        _originalParc.GpsPosHandler.GetGpsPosition(0).Width = parcel.GpsPosHandler.GetGpsPosition(0).Width;
+        _originalParc.GpsPosHandler.GetGpsPosition(1).Width = parcel.GpsPosHandler.GetGpsPosition(1).Width;
+        _originalParc.GpsPosHandler.GetGpsPosition(0).Length = parcel.GpsPosHandler.GetGpsPosition(0).Length;
+        _originalParc.GpsPosHandler.GetGpsPosition(1).Width = parcel.GpsPosHandler.GetGpsPosition(1).Width;
+
+        if(_originalParc.GpsPosHandler.GetGpsPosition(0).WidthPosition != parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition ||
+            _originalParc.GpsPosHandler.GetGpsPosition(1).WidthPosition != parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition ||
+            _originalParc.GpsPosHandler.GetGpsPosition(0).LengthPosition != parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition ||
+            _originalParc.GpsPosHandler.GetGpsPosition(1).LengthPosition != parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition) {
+
+            ParcelService.EditParcel(_originalParc, parcel);
+
+        }
+
         isEditDialogVisible = false;
         StateHasChanged();
     }

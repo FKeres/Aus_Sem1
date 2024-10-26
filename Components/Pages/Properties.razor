@@ -56,6 +56,7 @@ else
                     </tr>
                 }
             </tbody>
+    using System.Reflection.PortableExecutable;
         </table>
     }
 }
@@ -216,6 +217,7 @@ else
     private bool isEditDialogVisible = false;
     private bool isSearchDialogVisible = false;
     private Property? _editProperty;
+    private Property? _originalProp;
     private int _inventNo;
     private string? _propDesc;
     private char _gps1Width, _gps1Length;
@@ -288,18 +290,39 @@ else
     }
 
     void RemoveProperty(Property property) {
-    PropertyService.RemoveProperty(property);
-    StateHasChanged();
+        PropertyService.RemoveProperty(property);
+        HomeService.RemoveProp(property);
+        StateHasChanged();
     }
 
     void EditProperty(Property property) {
-        PropertyService.EditProperty(property);
+        if(property.InventNo != 0) {
+            _originalProp.InventNo = property.InventNo;
+        }
+        if(property.PropDesc != "") {
+            _originalProp.PropDesc = property.PropDesc;
+        }
+        _originalProp.GpsPosHandler.GetGpsPosition(0).Width = property.GpsPosHandler.GetGpsPosition(0).Width;
+        _originalProp.GpsPosHandler.GetGpsPosition(1).Width = property.GpsPosHandler.GetGpsPosition(1).Width;
+        _originalProp.GpsPosHandler.GetGpsPosition(0).Length = property.GpsPosHandler.GetGpsPosition(0).Length;
+        _originalProp.GpsPosHandler.GetGpsPosition(1).Width = property.GpsPosHandler.GetGpsPosition(1).Width;
+
+        if(_originalProp.GpsPosHandler.GetGpsPosition(0).WidthPosition != property.GpsPosHandler.GetGpsPosition(0).WidthPosition ||
+            _originalProp.GpsPosHandler.GetGpsPosition(1).WidthPosition != property.GpsPosHandler.GetGpsPosition(1).WidthPosition ||
+            _originalProp.GpsPosHandler.GetGpsPosition(0).LengthPosition != property.GpsPosHandler.GetGpsPosition(0).LengthPosition ||
+            _originalProp.GpsPosHandler.GetGpsPosition(1).LengthPosition != property.GpsPosHandler.GetGpsPosition(0).LengthPosition) {
+
+            PropertyService.EditProperty(_originalProp, property);
+
+        }
+
         isEditDialogVisible = false;
         StateHasChanged();
     }
 
     void ShowEditProperty(Property property) {
-        _editProperty = property;
+        _originalProp = property;
+        _editProperty = new Property(property.InventNo, property.PropDesc, property.GpsPosHandler.GpsPositioons);
         isEditDialogVisible = true;
         StateHasChanged();
     }

@@ -28,10 +28,8 @@ public class PropertyService
     }
 
     internal List<Property> SearchProperties(double gpsWToSearch, double gpsLToSearch) {
-        Key key1 = new Key(gpsWToSearch);
-        Key key2 = new Key(gpsLToSearch);
-
-        List<Key> keys = [key1, key2];
+        
+        List<Key> keys = [new Key(gpsWToSearch),  new Key(gpsLToSearch)];
 
         return _propertyTree.FindElement(keys);
     }
@@ -52,7 +50,38 @@ public class PropertyService
         _propertyTree.RemoveExactElement(keys2, property);
     }
 
-    internal void EditProperty(Property property) {
+    internal void EditProperty(Property oldProp, Property newProp) {
+        Key key1 = new Key(oldProp.GpsPosHandler.GetGpsPosition(0).WidthPosition);
+        Key key2 = new Key(oldProp.GpsPosHandler.GetGpsPosition(0).LengthPosition);
 
+        List<Key> keys = [key1, key2];
+
+        _propertyTree.RemoveExactElement(keys, oldProp);
+
+        Key key3 = new Key(oldProp.GpsPosHandler.GetGpsPosition(1).WidthPosition);
+        Key key4 = new Key(oldProp.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+
+        List<Key> keys2 = [key3, key4];
+
+        _propertyTree.RemoveExactElement(keys2, oldProp);
+
+        oldProp.GpsPosHandler.GetGpsPosition(0).WidthPosition = newProp.GpsPosHandler.GetGpsPosition(0).WidthPosition;
+        oldProp.GpsPosHandler.GetGpsPosition(0).LengthPosition = newProp.GpsPosHandler.GetGpsPosition(0).LengthPosition;
+        oldProp.GpsPosHandler.GetGpsPosition(1).WidthPosition = newProp.GpsPosHandler.GetGpsPosition(1).WidthPosition;
+        oldProp.GpsPosHandler.GetGpsPosition(1).LengthPosition = newProp.GpsPosHandler.GetGpsPosition(1).LengthPosition;
+
+        Key key5 = new Key(oldProp.GpsPosHandler.GetGpsPosition(0).WidthPosition);
+        Key key6 = new Key(oldProp.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+
+        List<Key> keys3 = [key5, key6];
+
+        _propertyTree.AddElement(keys3, oldProp);
+
+        Key key7 = new Key(oldProp.GpsPosHandler.GetGpsPosition(1).WidthPosition);
+        Key key8 = new Key(oldProp.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+
+        List<Key> keys4 = [key7, key8];
+
+        _propertyTree.AddElement(keys4, oldProp);
     }
 }

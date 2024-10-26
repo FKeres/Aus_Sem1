@@ -56,4 +56,44 @@ public class HomeService
 
         return _tree.FindElement(keys);
     }
+
+    internal void RemoveParc(Parcel parcel) {
+        PropParcHolder holder = new PropParcHolder();
+        holder.Parcel = parcel;
+
+        Key key1 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition);
+        Key key2 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+
+        List<Key> keys = [key1, key2];
+
+        _tree.RemoveExactElement(keys, holder);
+
+        Key key3 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition);
+        Key key4 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+
+        List<Key> keys2 = [key3, key4];
+
+
+        _tree.RemoveExactElement(keys2, holder);
+    }
+
+    internal void RemoveProp(Property property) {
+        PropParcHolder holder = new PropParcHolder();
+        holder.Property = property;
+
+        Key key1 = new Key(property.GpsPosHandler.GetGpsPosition(0).WidthPosition);
+        Key key2 = new Key(property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+
+        List<Key> keys = [key1, key2];
+
+        _tree.RemoveExactElement(keys, holder);
+
+        Key key3 = new Key(property.GpsPosHandler.GetGpsPosition(1).WidthPosition);
+        Key key4 = new Key(property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+
+        List<Key> keys2 = [key3, key4];
+
+        _tree.RemoveExactElement(keys2, holder);
+    }
+
 }
