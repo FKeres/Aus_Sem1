@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "kWco45Z98i9G5QLsGPOKOnesHDcS1C0IcfZ4JZjvo6w=",
+  "Hash": "1wi2wxalhnsRguGcNTOay2+UE6YcqIxpyr6LdE0aYdk=",
   "Source": "AusSemClient(1)",
   "BasePath": "_content/AusSemClient(1)",
   "Mode": "Default",
@@ -16,6 +16,25 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "C:\\Users\\fikesk\\.nuget\\packages\\blazorinputfile\\0.2.0\\staticwebassets\\inputfile.js",
+      "SourceId": "BlazorInputFile",
+      "SourceType": "Package",
+      "ContentRoot": "C:\\Users\\fikesk\\.nuget\\packages\\blazorinputfile\\0.2.0\\staticwebassets\\",
+      "BasePath": "_content/BlazorInputFile",
+      "RelativePath": "inputfile.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\fikesk\\.nuget\\packages\\blazorinputfile\\0.2.0\\staticwebassets\\inputfile.js"
+    },
     {
       "Identity": "C:\\Users\\fikesk\\C#Projects\\AusSemClient(1)\\obj\\Debug\\net8.0\\scopedcss\\bundle\\AusSemClient(1).styles.css",
       "SourceId": "AusSemClient(1)",

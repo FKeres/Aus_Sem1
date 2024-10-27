@@ -42,9 +42,14 @@ class Property :TerritorialUnit<Parcel>
         _gpsPosHandler = new GpsPosHandler();
     }
 
+    public Property()
+    {
+        _gpsPosHandler = new GpsPosHandler();
+    }
+
     #endregion
 
-    
+
     #region Get/Set
     public int InventNo { get => _inventNo; set => _inventNo = value; }
     public string? PropDesc { get => _propDesc; set => _propDesc = value; }
@@ -89,6 +94,72 @@ class Property :TerritorialUnit<Parcel>
     public override int GetHashCode()
     {
         return HashCode.Combine(_propertyId);
+    }
+
+    public string Serialize() {
+        return $"PROPERTYID:{_propertyId};INVENTNO:{_inventNo};PROPDESC:{_propDesc};GPSW1:{_gpsPosHandler.GpsPositioons[0].Width};GPSWP1:{_gpsPosHandler.GpsPositioons[0].WidthPosition};GPSL1:{_gpsPosHandler.GpsPositioons[0].Length};GPSLP1:{_gpsPosHandler.GpsPositioons[0].LengthPosition};GPSW2:{_gpsPosHandler.GpsPositioons[1].Width};GPSWP2:{_gpsPosHandler.GpsPositioons[1].WidthPosition};GPSL2:{_gpsPosHandler.GpsPositioons[1].Length};GPSLP2:{_gpsPosHandler.GpsPositioons[1].LengthPosition};";
+    }
+
+    public void DeSerialize(string attributes) {
+        var fieldSeparator = attributes.Split(';');
+        char w1 = ' ';
+        double wP1 = 0;
+        char l1 = ' ';
+        double lP1 = 0;
+
+        char w2 = ' ';
+        double wP2 = 0;
+        char l2 = ' ';
+        double lP2 = 0;
+
+        foreach (var attr in fieldSeparator) {
+            if (string.IsNullOrWhiteSpace(attr)) continue;
+
+            var keyValue = attr.Split(':');
+            var key = keyValue[0];
+            var value = keyValue[1];
+
+            switch (key) {
+                case "PROPERTYID":
+                    _propertyId = int.Parse(value);
+                    break;
+                case "INVENTNO":
+                    _inventNo = int.Parse(value);
+                    break;
+                case "PROPDESC":
+                    _propDesc = value;
+                    break;
+                case "GPSW1":
+                    w1 = char.Parse(value);
+                    break;
+                case "GPSWP1":
+                    wP1 = double.Parse(value);
+                    break;
+                case "GPSL1":
+                    l1 = char.Parse(value);
+                    break;
+                case "GPSLP1":
+                    lP1 = double.Parse(value);
+                    break;
+                case "GPSW2":
+                    w2 = char.Parse(value);
+                    break;
+                case "GPSWP2":
+                   wP2 = double.Parse(value);
+                    break;
+                case "GPSL2":
+                    l2 = char.Parse(value);
+                    break;
+                case "GPSLP2":
+                    lP2 = double.Parse(value);
+                    break;
+            }
+        }
+
+        GpsPosition gps1 = new GpsPosition(w1, wP1, l1, lP1);
+        _gpsPosHandler.GpsPositioons[0] = gps1;
+        GpsPosition gps2 = new GpsPosition(w2, wP2, l2, lP2);
+        _gpsPosHandler.GpsPositioons[1] = gps1;
     }
 
     #endregion

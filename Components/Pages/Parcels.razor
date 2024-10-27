@@ -293,7 +293,6 @@ else
     }
 
     void EditParcel(Parcel parcel) {
-        
         ParcelService.EditParcel(_originalParc, parcel);
         //HomeService.EditParcel(_originalParc, parcel);
         isEditDialogVisible = false;
@@ -302,7 +301,13 @@ else
 
     void ShowEditParcel(Parcel parcel) {
         _originalParc = parcel;
-        _editParcel = new Parcel(parcel.ParcelId, parcel.ParcNo, parcel.ParcDesc, parcel.GpsPosHandler.GpsPositioons);
+        GpsPosHandler gpsHand = new GpsPosHandler();
+        GpsPosition gps1 = new GpsPosition(_originalParc.GpsPosHandler.GpsPositioons[0].Width, _originalParc.GpsPosHandler.GpsPositioons[0].WidthPosition, _originalParc.GpsPosHandler.GpsPositioons[0].Length, _originalParc.GpsPosHandler.GpsPositioons[0].LengthPosition);
+        gpsHand.GpsPositioons[0] = gps1;
+        GpsPosition gps2 = new GpsPosition(_originalParc.GpsPosHandler.GpsPositioons[1].Width, _originalParc.GpsPosHandler.GpsPositioons[1].WidthPosition, _originalParc.GpsPosHandler.GpsPositioons[1].Length, _originalParc.GpsPosHandler.GpsPositioons[1].LengthPosition);
+        gpsHand.GpsPositioons[1] = gps2;
+
+        _editParcel = new Parcel(parcel.ParcelId, parcel.ParcNo, parcel.ParcDesc, gpsHand.GpsPositioons);
         isEditDialogVisible = true;
         StateHasChanged();
     }

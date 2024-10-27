@@ -391,8 +391,8 @@ class Test
 
     public List<Key> GenerateKeysForKont() {
 
-        double a = random.NextDouble() * 50;
-        double d = random.NextDouble() * 50;
+        double a = Math.Round(random.NextDouble() * 50,2);
+        double d = Math.Round(random.NextDouble() * 50,2);
         int c = random.Next(50);
 
         int maxLeng = 10;

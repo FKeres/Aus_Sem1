@@ -9,12 +9,11 @@ public class ParcelService
 
     public ParcelService(HomeService homeService)
     {
-        Console.WriteLine("ParcelService Constructor Called");
         _home = homeService;
         _parcelTree = new KDTree<Parcel>();
         _actualParcId = 0;
         random = new Random();
-        GenerateParc();
+        //GenerateParc();
     }
 
     internal KDTree<Parcel> GetAllParcels()
@@ -36,7 +35,6 @@ public class ParcelService
 
         List<Key> keys2 = [key3, key4];
         _parcelTree.AddElement(keys2, parcel);
-        Console.WriteLine("Call Home Service");
         _home.AddParcel(_actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
 
         ++_actualParcId;
@@ -51,7 +49,14 @@ public class ParcelService
         List<Parcel> copyParcels = new List<Parcel>();
         foreach(var copyParc in _parcelTree.FindElement(keys)) {
             if(copyParc is not null) {
-                Parcel copyParcel = new Parcel(copyParc.ParcelId, copyParc.ParcNo, copyParc.ParcDesc, copyParc.GpsPosHandler.GpsPositioons);
+
+                GpsPosHandler gpsHand = new GpsPosHandler();
+                GpsPosition gps1 = new GpsPosition(copyParc.GpsPosHandler.GpsPositioons[0].Width, copyParc.GpsPosHandler.GpsPositioons[0].WidthPosition, copyParc.GpsPosHandler.GpsPositioons[0].Length, copyParc.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                gpsHand.GpsPositioons[0] = gps1;
+                GpsPosition gps2 = new GpsPosition(copyParc.GpsPosHandler.GpsPositioons[1].Width, copyParc.GpsPosHandler.GpsPositioons[1].WidthPosition, copyParc.GpsPosHandler.GpsPositioons[1].Length, copyParc.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                gpsHand.GpsPositioons[1] = gps2;
+
+                Parcel copyParcel = new Parcel(copyParc.ParcelId, copyParc.ParcNo, copyParc.ParcDesc, gpsHand.GpsPositioons);
                 copyParcels.Add(copyParcel);
             }
         }
@@ -160,8 +165,38 @@ public class ParcelService
             }
 
             string parcDesc = stringBuilder.ToString();
-            Console.WriteLine("Key1 " + gpsW1 + " Key2 " + gpsL1);
             AddParcel(parcNo, parcDesc, directions[random.Next(directions.Length)], gpsW1, directions[random.Next(directions.Length)], gpsL1, directions[random.Next(directions.Length)], gpsW2, directions[random.Next(directions.Length)], gpsL2);
+        }
+    }
+
+    public void SaveState(string filePath) {
+        using (StreamWriter writer = new StreamWriter(filePath)) {
+            //writer.WriteLine($"ACTUALPARCID:{_actualParcId};");
+            foreach(var parc in _parcelTree.LevelOrderIter()) {
+                string line = parc.Serialize();
+                writer.WriteLine(line);
+            }
+        }
+    }
+
+    public void LoadState(string filePath) {
+        List<int> parcIds = new List<int>();
+        using (StreamReader reader = new StreamReader(filePath)) {
+            //string? actualParcIdLine = reader.ReadLine();
+
+            //if (actualParcIdLine != null && actualParcIdLine.StartsWith("ACTUALPARCID:")) {
+                //_actualParcId = int.Parse(actualParcIdLine.Split(':')[1].TrimEnd(';'));
+            //}
+
+            string? line;
+            while ((line = reader.ReadLine()) != null) {
+                Parcel parcel = new Parcel();
+                parcel.DeSerialize(line);
+                if(!parcIds.Contains(parcel.ParcelId)) {
+                    parcIds.Add(parcel.ParcelId);
+                    AddParcel(parcel.ParcNo, parcel.ParcDesc, parcel.GpsPosHandler.GpsPositioons[0].Width, parcel.GpsPosHandler.GpsPositioons[0].WidthPosition, parcel.GpsPosHandler.GpsPositioons[0].Length, parcel.GpsPosHandler.GpsPositioons[0].LengthPosition, parcel.GpsPosHandler.GpsPositioons[1].Width, parcel.GpsPosHandler.GpsPositioons[1].WidthPosition, parcel.GpsPosHandler.GpsPositioons[1].Length, parcel.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                }          
+            }
         }
     }
 }

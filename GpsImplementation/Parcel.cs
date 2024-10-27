@@ -4,12 +4,16 @@ class Parcel :TerritorialUnit<Property>
 
     private int _parcelId;
     private int _parcNo;
-    private string _parcDesc;
+    private string? _parcDesc;
     private GpsPosHandler _gpsPosHandler;
 
     #endregion
 
     #region Constructor
+
+    public Parcel() {
+        _gpsPosHandler = new GpsPosHandler();
+    }
 
     public Parcel(int parcelId, int parcNo, string parcDesc, GpsPosition[] gpsPositions)
     {
@@ -48,7 +52,7 @@ class Parcel :TerritorialUnit<Property>
     #region Get/Set
 
     public int ParcNo { get => _parcNo; set => _parcNo = value; }
-    public string ParcDesc { get => _parcDesc; set => _parcDesc = value; }
+    public string? ParcDesc { get => _parcDesc; set => _parcDesc = value; }
     internal GpsPosHandler GpsPosHandler { get => _gpsPosHandler; set => _gpsPosHandler = value; }
     public int ParcelId { get => _parcelId; set => _parcelId = value; }
 
@@ -91,6 +95,74 @@ class Parcel :TerritorialUnit<Property>
     public override int GetHashCode()
     {
         return HashCode.Combine(_parcelId);
+    }
+
+    public string Serialize() {
+        return $"PARCELID:{_parcelId};PARCNO:{_parcNo};PARCDESC:{_parcDesc};GPSW1:{_gpsPosHandler.GpsPositioons[0].Width};GPSWP1:{_gpsPosHandler.GpsPositioons[0].WidthPosition};GPSL1:{_gpsPosHandler.GpsPositioons[0].Length};GPSLP1:{_gpsPosHandler.GpsPositioons[0].LengthPosition};GPSW2:{_gpsPosHandler.GpsPositioons[1].Width};GPSWP2:{_gpsPosHandler.GpsPositioons[1].WidthPosition};GPSL2:{_gpsPosHandler.GpsPositioons[1].Length};GPSLP2:{_gpsPosHandler.GpsPositioons[1].LengthPosition};";
+    }
+
+    public void DeSerialize(string attributes) {
+        var fieldSeparator = attributes.Split(';');
+
+        char w1 = ' ';
+        double wP1 = 0;
+        char l1 = ' ';
+        double lP1 = 0;
+
+        char w2 = ' ';
+        double wP2 = 0;
+        char l2 = ' ';
+        double lP2 = 0;
+
+        foreach (var attr in fieldSeparator) {
+            if (string.IsNullOrWhiteSpace(attr)) continue;
+
+            var keyValue = attr.Split(':');
+            var key = keyValue[0];
+            var value = keyValue[1];
+
+
+            switch (key) {
+                case "PARCELID":
+                    _parcelId = int.Parse(value);
+                    break;
+                case "PARCNO":
+                    _parcNo = int.Parse(value);
+                    break;
+                case "PARCDESC":
+                    _parcDesc = value;
+                    break;
+                case "GPSW1":
+                    w1 = char.Parse(value);
+                    break;
+                case "GPSWP1":
+                    wP1 = double.Parse(value);
+                    break;
+                case "GPSL1":
+                    l1 = char.Parse(value);
+                    break;
+                case "GPSLP1":
+                    lP1 = double.Parse(value);
+                    break;
+                case "GPSW2":
+                    w2 = char.Parse(value);
+                    break;
+                case "GPSWP2":
+                   wP2 = double.Parse(value);
+                    break;
+                case "GPSL2":
+                    l2 = char.Parse(value);
+                    break;
+                case "GPSLP2":
+                    lP2 = double.Parse(value);
+                    break;
+            }
+        }
+
+        GpsPosition gps1 = new GpsPosition(w1, wP1, l1, lP1);
+        _gpsPosHandler.GpsPositioons[0] = gps1;
+        GpsPosition gps2 = new GpsPosition(w2, wP2, l2, lP2);
+        _gpsPosHandler.GpsPositioons[1] = gps2;
     }
 
     #endregion

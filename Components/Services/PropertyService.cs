@@ -10,12 +10,11 @@ public class PropertyService
 
     public PropertyService(HomeService homeService)
     {
-        Console.WriteLine("PropertyService Constructor Called");
         _home = homeService;
         _propertyTree = new KDTree<Property>();
         _actualPropId = 0;
         random = new Random();
-        GenerateProp();
+        //GenerateProp();
     }
 
     internal KDTree<Property> GetAllProperties()
@@ -50,7 +49,13 @@ public class PropertyService
         List<Property> copyProperties = new List<Property>();
         foreach(var copyProp in _propertyTree.FindElement(keys)) {
             if(copyProp is not null) {
-                Property copyProperty = new Property(copyProp.PropertyId, copyProp.InventNo, copyProp.PropDesc, copyProp.GpsPosHandler.GpsPositioons);
+                GpsPosHandler gpsHand = new GpsPosHandler();
+                GpsPosition gps1 = new GpsPosition(copyProp.GpsPosHandler.GpsPositioons[0].Width, copyProp.GpsPosHandler.GpsPositioons[0].WidthPosition, copyProp.GpsPosHandler.GpsPositioons[0].Length, copyProp.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                gpsHand.GpsPositioons[0] = gps1;
+                GpsPosition gps2 = new GpsPosition(copyProp.GpsPosHandler.GpsPositioons[1].Width, copyProp.GpsPosHandler.GpsPositioons[1].WidthPosition, copyProp.GpsPosHandler.GpsPositioons[1].Length, copyProp.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                gpsHand.GpsPositioons[1] = gps2;
+                
+                Property copyProperty = new Property(copyProp.PropertyId, copyProp.InventNo, copyProp.PropDesc, gpsHand.GpsPositioons);
                 copyProperties.Add(copyProperty);
             }
         }
@@ -161,6 +166,37 @@ public class PropertyService
             string propDesc = stringBuilder.ToString();
             Console.WriteLine("Key1 " + gpsW1 + " Key2 " + gpsL1);
             AddProperty(inventNo, propDesc, directions[random.Next(directions.Length)], gpsW1, directions[random.Next(directions.Length)], gpsL1, directions[random.Next(directions.Length)], gpsW2, directions[random.Next(directions.Length)], gpsL2);
+        }
+    }
+
+    public void SaveState(string filePath) {
+        using (StreamWriter writer = new StreamWriter(filePath)) {
+            //writer.WriteLine($"ACTUALPARCID:{_actualParcId};");
+            foreach(var prop in _propertyTree.LevelOrderIter()) {
+                string line = prop.Serialize();
+                writer.WriteLine(line);
+            }
+        }
+    }
+
+    public void LoadState(string filePath) {
+        List<int> propIds = new List<int>();
+        using (StreamReader reader = new StreamReader(filePath)) {
+            //string? actualParcIdLine = reader.ReadLine();
+
+            //if (actualPropIdLine != null && actualPropIdLine.StartsWith("ACTUALPROPID:")) {
+                //_actualPropId = int.Parse(actualPropIdLine.Split(':')[1].TrimEnd(';'));
+            //}
+
+            string? line;
+            while ((line = reader.ReadLine()) != null) {
+                Property property = new Property();
+                property.DeSerialize(line);
+                if (!propIds.Contains(property.PropertyId)) {
+                    propIds.Add(property.PropertyId);
+                    AddProperty(property.InventNo, property.PropDesc, property.GpsPosHandler.GpsPositioons[0].Width, property.GpsPosHandler.GpsPositioons[0].WidthPosition, property.GpsPosHandler.GpsPositioons[0].Length, property.GpsPosHandler.GpsPositioons[0].LengthPosition, property.GpsPosHandler.GpsPositioons[1].Width, property.GpsPosHandler.GpsPositioons[1].WidthPosition, property.GpsPosHandler.GpsPositioons[1].Length, property.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                }
+            }
         }
     }
 }

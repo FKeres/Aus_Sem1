@@ -1,5 +1,7 @@
 ﻿@page "/"
 @inject HomeService HomeService
+@inject ParcelService ParcelService
+@inject PropertyService PropertyService
 @rendermode InteractiveServer
 
 <PageTitle>All</PageTitle>
@@ -8,6 +10,9 @@
 
 <button class="btn btn-primary" @onclick="ShowSearchAllDialog">Search with GPS</button>
 <button class="btn btn-danger" @onclick="ShowTestDialog">Test operations</button>
+<button class="btn btn-info" @onclick="ShowSaveDialog">Save</button>
+<button class="btn btn-dark" @onclick="ShowLoadDialog">Load</button>
+
 
 @if ((_propParcHolder == null && _propParcHolder1 == null) || (_propParcHolder.Count == 0 && _propParcHolder1.Count == 0))
 {
@@ -167,13 +172,73 @@ else
     </div>
 }
 
+@if (isSaveDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Save File</h5>
+                    <button type="button" class="btn-close" @onclick="CloseSaveDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="filePathProp" class="form-label">File Path for Properties</label>
+                        <input type="text" class="form-control" id="filePathParc" @bind="_filePathProp" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="filePathParc" class="form-label">File Path for Parcels</label>
+                        <input type="text" class="form-control" id="filePathProp" @bind="_filePathParc" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseSaveDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="Save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isLoadDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Load File</h5>
+                    <button type="button" class="btn-close" @onclick="CloseLoadDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="filePathProp" class="form-label">File Path for Properties</label>
+                        <input type="text" class="form-control" id="filePathParc" @bind="_filePathProp" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="filePathParc" class="form-label">File Path for Parcels</label>
+                        <input type="text" class="form-control" id="filePathProp" @bind="_filePathParc" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseLoadDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="Load">Load</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private List<PropParcHolder> _propParcHolder = new List<PropParcHolder>();
     private List<PropParcHolder> _propParcHolder1 = new List<PropParcHolder>();
     private double _gpsWToSearch1, _gpsLToSearch1, _gpsWToSearch2, _gpsLToSearch2;
     private bool isSearchDialogVisible = false;
     private bool isTestDialogVisible = false;
+    private bool isSaveDialogVisible = false;
+    private bool isLoadDialogVisible = false;
     private int _operNum;
+    private string? _filePathProp;
+    private string? _filePathParc;
 
     void ShowSearchParcelDialog()
     {
@@ -223,6 +288,44 @@ else
     void TestOperations() {
         HomeService.TestOperations(_operNum);
         isTestDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowSaveDialog() {
+        _filePathParc = "";
+        _filePathProp = "";
+        isSaveDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseSaveDialog() {
+        isSaveDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void Save() {
+        PropertyService.SaveState(_filePathProp);
+        ParcelService.SaveState(_filePathParc);
+        isSaveDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowLoadDialog() {
+        _filePathParc = "";
+        _filePathProp = "";
+        isLoadDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseLoadDialog() {
+        isLoadDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void Load() {
+        PropertyService.LoadState(_filePathProp);
+        ParcelService.LoadState(_filePathParc);
+        isLoadDialogVisible = false;
         StateHasChanged();
     }
 }

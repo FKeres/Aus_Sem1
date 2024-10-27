@@ -302,7 +302,13 @@ else
 
     void ShowEditProperty(Property property) {
         _originalProp = property;
-        _editProperty = new Property(property.PropertyId, property.InventNo, property.PropDesc, property.GpsPosHandler.GpsPositioons);
+        GpsPosHandler gpsHand = new GpsPosHandler();
+        GpsPosition gps1 = new GpsPosition(_originalProp.GpsPosHandler.GpsPositioons[0].Width, _originalProp.GpsPosHandler.GpsPositioons[0].WidthPosition, _originalProp.GpsPosHandler.GpsPositioons[0].Length, _originalProp.GpsPosHandler.GpsPositioons[0].LengthPosition);
+        gpsHand.GpsPositioons[0] = gps1;
+        GpsPosition gps2 = new GpsPosition(_originalProp.GpsPosHandler.GpsPositioons[1].Width, _originalProp.GpsPosHandler.GpsPositioons[1].WidthPosition, _originalProp.GpsPosHandler.GpsPositioons[1].Length, _originalProp.GpsPosHandler.GpsPositioons[1].LengthPosition);
+        gpsHand.GpsPositioons[1] = gps2;
+
+        _editProperty = new Property(property.PropertyId, property.InventNo, property.PropDesc, gpsHand.GpsPositioons);
         isEditDialogVisible = true;
         StateHasChanged();
     }

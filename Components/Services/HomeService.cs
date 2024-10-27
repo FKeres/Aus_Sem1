@@ -4,7 +4,6 @@ public class HomeService
 
     public HomeService()
     {
-        Console.WriteLine("HomeService Constructor Called");
         _tree = new KDTree<PropParcHolder>();
     }
 
@@ -15,7 +14,6 @@ public class HomeService
 
     internal void AddParcel(int actualParcId, int parcNo, string parcDesc, char gps1Width, double gps1WidthPosition, char gps1Length, double gps1LengthPosition, char gps2Width, double gps2WidthPosition, char gps2Length, double gps2LengthPosition)
     {
-        Console.WriteLine("Added to Home");
         Parcel parcel = new Parcel(actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
         PropParcHolder holder = new PropParcHolder();
         holder.Parcel = parcel;
@@ -65,11 +63,23 @@ public class HomeService
             if(actualHolder is not null) {
                 PropParcHolder copyholder = new PropParcHolder();
                 if(actualHolder.Parcel is not null) {
-                    Parcel copyParcel = new Parcel(actualHolder.Parcel.ParcelId, actualHolder.Parcel.ParcNo, actualHolder.Parcel.ParcDesc, actualHolder.Parcel.GpsPosHandler.GpsPositioons);
+                    GpsPosHandler gpsHand = new GpsPosHandler();
+                    GpsPosition gps1 = new GpsPosition(actualHolder.Parcel.GpsPosHandler.GpsPositioons[0].Width, actualHolder.Parcel.GpsPosHandler.GpsPositioons[0].WidthPosition, actualHolder.Parcel.GpsPosHandler.GpsPositioons[0].Length, actualHolder.Parcel.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                    gpsHand.GpsPositioons[0] = gps1;
+                    GpsPosition gps2 = new GpsPosition(actualHolder.Parcel.GpsPosHandler.GpsPositioons[1].Width, actualHolder.Parcel.GpsPosHandler.GpsPositioons[1].WidthPosition, actualHolder.Parcel.GpsPosHandler.GpsPositioons[1].Length, actualHolder.Parcel.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                    gpsHand.GpsPositioons[1] = gps2;
+
+                    Parcel copyParcel = new Parcel(actualHolder.Parcel.ParcelId, actualHolder.Parcel.ParcNo, actualHolder.Parcel.ParcDesc, gpsHand.GpsPositioons);
                     copyholder.Parcel = copyParcel;
                 } 
                 if(actualHolder.Property is not null) {
-                    Property copyProperty = new Property(actualHolder.Property.PropertyId, actualHolder.Property.InventNo, actualHolder.Property.PropDesc, actualHolder.Property.GpsPosHandler.GpsPositioons);
+                    GpsPosHandler gpsHand = new GpsPosHandler();
+                    GpsPosition gps1 = new GpsPosition(actualHolder.Property.GpsPosHandler.GpsPositioons[0].Width, actualHolder.Property.GpsPosHandler.GpsPositioons[0].WidthPosition, actualHolder.Property.GpsPosHandler.GpsPositioons[0].Length, actualHolder.Property.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                    gpsHand.GpsPositioons[0] = gps1;
+                    GpsPosition gps2 = new GpsPosition(actualHolder.Property.GpsPosHandler.GpsPositioons[1].Width, actualHolder.Property.GpsPosHandler.GpsPositioons[1].WidthPosition, actualHolder.Property.GpsPosHandler.GpsPositioons[1].Length, actualHolder.Property.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                    gpsHand.GpsPositioons[1] = gps2;
+
+                    Property copyProperty = new Property(actualHolder.Property.PropertyId, actualHolder.Property.InventNo, actualHolder.Property.PropDesc, gpsHand.GpsPositioons);
                     copyholder.Property = copyProperty;
                 }
                 
@@ -252,10 +262,6 @@ public class HomeService
     public void TestOperations(int operationCount) {
         Test test = new Test(operationCount, 4);
         test.TestOperationsKont2();
-    }
-
-    public void GenerareParProp() {
-
     }
 
 }
