@@ -229,7 +229,7 @@ class Test
         return false;
     }
 
-        public bool TestOperationsKont2() {
+    public async Task<bool> TestOperationsKont2() {
         int operation;
 
         Stopwatch stopwatch = new Stopwatch();
@@ -326,9 +326,11 @@ class Test
         stopwatch.Stop();
         Console.WriteLine("inorder done - " + stopwatch.Elapsed);
 
+        /*
         foreach(var inorderIt in _tree.InOrderIter()) {
             Console.WriteLine(inorderIt.ToString());
         }
+        */
         
         if((_list is not null && treeList is not null)){ 
             if(_list.Count == treeList.Count) {

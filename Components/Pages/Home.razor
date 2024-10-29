@@ -12,7 +12,7 @@
 <button class="btn btn-danger" @onclick="ShowTestDialog">Test operations</button>
 <button class="btn btn-info" @onclick="ShowSaveDialog">Save</button>
 <button class="btn btn-dark" @onclick="ShowLoadDialog">Load</button>
-
+<button class="btn btn-dark" @onclick="ShowGenerateDialog">Generate</button>
 
 @if ((_propParcHolder == null && _propParcHolder1 == null) || (_propParcHolder.Count == 0 && _propParcHolder1.Count == 0))
 {
@@ -228,6 +228,57 @@ else
     </div>
 }
 
+@if (isGenerateDialogVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate Data</h5>
+                    <button type="button" class="btn-close" @onclick="CloseGenerateDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="propNum" class="form-label">Number of generated properties</label>
+                        <input type="number" class="form-control" id="propNum" @bind="_propNum" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="parcNum" class="form-label">Number of generated parcels</label>
+                        <input type="number" class="form-control" id="parcNum" @bind="_parcNum" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="coverPerc" class="form-label">Number of generated parcels</label>
+                        <input type="number" class="form-control" id="coverPerc" @bind="_coverPerc" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseGenerateDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="Generate">Generate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isTestResultVisible)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Test Result</h5>
+                </div>
+                <div class="modal-body">
+                    <p>@_testResultMessage</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="CloseTetsResult">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private List<PropParcHolder> _propParcHolder = new List<PropParcHolder>();
     private List<PropParcHolder> _propParcHolder1 = new List<PropParcHolder>();
@@ -236,9 +287,15 @@ else
     private bool isTestDialogVisible = false;
     private bool isSaveDialogVisible = false;
     private bool isLoadDialogVisible = false;
+    private bool isGenerateDialogVisible = false;
     private int _operNum;
+    private int _propNum;
+    private int _parcNum;
+    private int _coverPerc;
     private string? _filePathProp;
     private string? _filePathParc;
+    private string _testResultMessage;
+    private bool isTestResultVisible = false;
 
     void ShowSearchParcelDialog()
     {
@@ -285,8 +342,10 @@ else
         StateHasChanged();
     }
 
-    void TestOperations() {
-        HomeService.TestOperations(_operNum);
+    async Task TestOperations() {
+        bool result = await HomeService.TestOperations(_operNum);
+        _testResultMessage = result ? "Test successful!" : "Test failed!";
+        isTestResultVisible = true;
         isTestDialogVisible = false;
         StateHasChanged();
     }
@@ -326,6 +385,32 @@ else
         PropertyService.LoadState(_filePathProp);
         ParcelService.LoadState(_filePathParc);
         isLoadDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowGenerateDialog() {
+        _propNum = 0;
+        _parcNum = 0;
+        _coverPerc = 0;
+        isGenerateDialogVisible = true;
+        StateHasChanged();
+    }
+
+    void CloseGenerateDialog() {
+        isGenerateDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void Generate() {
+        List<List<double>> keys = new List<List<double>>();
+        keys = ParcelService.GenerateParc(_parcNum);
+        PropertyService.GenerateProp(_propNum, _coverPerc, keys);
+        isGenerateDialogVisible = false;
+        StateHasChanged();
+    }
+
+    void CloseTetsResult() {
+        isTestResultVisible = false;
         StateHasChanged();
     }
 }

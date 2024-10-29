@@ -13,7 +13,6 @@ public class ParcelService
         _parcelTree = new KDTree<Parcel>();
         _actualParcId = 0;
         random = new Random();
-        //GenerateParc();
     }
 
     internal KDTree<Parcel> GetAllParcels()
@@ -144,10 +143,11 @@ public class ParcelService
 
     }
 
-    public void GenerateParc() {
+    internal List<List<double>> GenerateParc(int num) {
+        List<List<double>> keys = new List<List<double>>();
         char[] directions = { 'N', 'S', 'W', 'E' };
 
-        for(int i = 0; i < 50; ++i) {
+        for(int i = 0; i < num; ++i) {
             double gpsW1 = Math.Round(random.NextDouble() * 50,2);
             double gpsL1 = Math.Round(random.NextDouble() * 50,2);
             double gpsW2 = Math.Round(random.NextDouble() * 50,2);
@@ -166,7 +166,12 @@ public class ParcelService
 
             string parcDesc = stringBuilder.ToString();
             AddParcel(parcNo, parcDesc, directions[random.Next(directions.Length)], gpsW1, directions[random.Next(directions.Length)], gpsL1, directions[random.Next(directions.Length)], gpsW2, directions[random.Next(directions.Length)], gpsL2);
+
+            List<double> keys1 = [gpsW1, gpsL1];
+            keys.Add(keys1);
         }
+
+        return keys;
     }
 
     public void SaveState(string filePath) {

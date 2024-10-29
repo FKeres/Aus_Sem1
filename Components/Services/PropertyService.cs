@@ -14,7 +14,6 @@ public class PropertyService
         _propertyTree = new KDTree<Property>();
         _actualPropId = 0;
         random = new Random();
-        //GenerateProp();
     }
 
     internal KDTree<Property> GetAllProperties()
@@ -143,15 +142,22 @@ public class PropertyService
         _home.EditProperty(oldProp, newProp);
     }
 
-    public void GenerateProp() {
+    internal void GenerateProp(int num, int perc, List<List<double>> keys) {
         char[] directions = { 'N', 'S', 'W', 'E' };
+        int keyIndex;
 
-        for(int i = 0; i < 50; ++i) {
+        for(int i = 0; i < num; ++i) {
             double gpsW1 = Math.Round(random.NextDouble() * 50,2);
             double gpsL1 = Math.Round(random.NextDouble() * 50,2);
             double gpsW2 = Math.Round(random.NextDouble() * 50,2);
             double gpsL2 = Math.Round(random.NextDouble() * 50,2);
             int inventNo = random.Next(50);
+
+            if(random.NextDouble() <= perc) {
+                keyIndex =random.Next(keys.Count);
+                gpsW1 = keys[keyIndex][0];
+                gpsL1 = keys[keyIndex][1];
+            }
 
             int maxLeng = 10;
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

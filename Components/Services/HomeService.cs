@@ -259,9 +259,9 @@ public class HomeService
 
     }
 
-    public void TestOperations(int operationCount) {
+    public async Task<bool> TestOperations(int operationCount) {
         Test test = new Test(operationCount, 4);
-        test.TestOperationsKont2();
+        return await test.TestOperationsKont2();
     }
 
 }
