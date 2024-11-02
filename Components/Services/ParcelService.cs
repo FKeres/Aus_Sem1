@@ -249,4 +249,30 @@ public class ParcelService
         }
     }
 
+    internal List<Parcel> GetAll() {
+        List<Parcel> copyParcels = new List<Parcel>();
+
+        var foundElements = _parcelTree.InOrder();
+        if (foundElements == null || !foundElements.Any())
+        {
+            return copyParcels;
+        }
+
+        foreach(var copyParc in foundElements) {
+            if(copyParc is not null) {
+
+                GpsPosHandler gpsHand = new GpsPosHandler();
+                GpsPosition gps1 = new GpsPosition(copyParc.Data.GpsPosHandler.GpsPositioons[0].Width, copyParc.Data.GpsPosHandler.GpsPositioons[0].WidthPosition, copyParc.Data.GpsPosHandler.GpsPositioons[0].Length, copyParc.Data.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                gpsHand.GpsPositioons[0] = gps1;
+                GpsPosition gps2 = new GpsPosition(copyParc.Data.GpsPosHandler.GpsPositioons[1].Width, copyParc.Data.GpsPosHandler.GpsPositioons[1].WidthPosition, copyParc.Data.GpsPosHandler.GpsPositioons[1].Length, copyParc.Data.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                gpsHand.GpsPositioons[1] = gps2;
+
+                Parcel copyParcel = new Parcel(copyParc.Data.ParcelId, copyParc.Data.ParcNo, copyParc.Data.ParcDesc, gpsHand.GpsPositioons);
+                copyParcels.Add(copyParcel);
+            }
+        }
+
+        return copyParcels;
+    }
+
 }

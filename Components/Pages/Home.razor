@@ -13,6 +13,7 @@
 <button class="btn btn-info" @onclick="ShowSaveDialog">Save</button>
 <button class="btn btn-dark" @onclick="ShowLoadDialog">Load</button>
 <button class="btn btn-dark" @onclick="ShowGenerateDialog">Generate</button>
+<button class="btn btn-dark" @onclick="ShowAll">Show All</button>
 
 @if ((_propParcHolder == null && _propParcHolder1 == null) || (_propParcHolder.Count == 0 && _propParcHolder1.Count == 0))
 {
@@ -281,7 +282,7 @@ else
 
 @code {
     private List<PropParcHolder> _propParcHolder = new List<PropParcHolder>();
-    private List<PropParcHolder> _propParcHolder1 = new List<PropParcHolder>();
+    private List<PropParcHolder>? _propParcHolder1 = new List<PropParcHolder>();
     private double _gpsWToSearch1, _gpsLToSearch1, _gpsWToSearch2, _gpsLToSearch2;
     private bool isSearchDialogVisible = false;
     private bool isTestDialogVisible = false;
@@ -412,6 +413,12 @@ else
 
     void CloseTetsResult() {
         isTestResultVisible = false;
+        StateHasChanged();
+    }
+
+    void ShowAll() {
+        _propParcHolder = HomeService.GetAll();
+        _propParcHolder1 = null;
         StateHasChanged();
     }
 }

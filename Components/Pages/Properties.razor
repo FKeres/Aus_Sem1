@@ -8,6 +8,7 @@
 
 <button class="btn btn-primary" @onclick="ShowAddPropertyDialog">Add Property</button>
 <button class="btn btn-primary" @onclick="ShowSearchPropertyDialog">Search with GPS</button>
+<button class="btn btn-dark" @onclick="ShowAll">Show All</button>
 
 @if (_propertiesToShow == null || _propertiesToShow.Count == 0)
 {
@@ -250,7 +251,6 @@ else
     void AddProperty()
     {   
         PropertyService.AddProperty(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
-        //HomeService.AddProperty(_inventNo, _propDesc, _gps1Width, _gps1WidthPosition, _gps1Length, _gps1LengthPosition, _gps2Width, _gps2WidthPosition, _gps2Length, _gps2LengthPosition);
         isAddDialogVisible = false;
         _inventNo = 0;
         _propDesc = ""; 
@@ -325,5 +325,11 @@ else
     void CloseEditPropertyDialog() {
         isEditDialogVisible = false;
         StateHasChanged();
+    }
+
+    void ShowAll() {
+        _propertiesToShow = PropertyService.GetAll();
+        StateHasChanged();
+    }
     }
 }

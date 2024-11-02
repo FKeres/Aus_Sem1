@@ -97,6 +97,48 @@ public class HomeService
         return copyHolderList;
     }
 
+    internal List<PropParcHolder> GetAll() {
+
+        List<PropParcHolder> copyHolderList = new List<PropParcHolder>();
+
+        var foundElements = _tree.InOrder();
+        if (foundElements == null || !foundElements.Any())
+        {
+            return copyHolderList;
+        }
+
+
+        foreach(var actualHolder in foundElements) {
+            if(actualHolder is not null) {
+                PropParcHolder copyholder = new PropParcHolder();
+                if(actualHolder.Data.Parcel is not null) {
+                    GpsPosHandler gpsHand = new GpsPosHandler();
+                    GpsPosition gps1 = new GpsPosition(actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[0].Width, actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[0].WidthPosition, actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[0].Length, actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                    gpsHand.GpsPositioons[0] = gps1;
+                    GpsPosition gps2 = new GpsPosition(actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[1].Width, actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[1].WidthPosition, actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[1].Length, actualHolder.Data.Parcel.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                    gpsHand.GpsPositioons[1] = gps2;
+
+                    Parcel copyParcel = new Parcel(actualHolder.Data.Parcel.ParcelId, actualHolder.Data.Parcel.ParcNo, actualHolder.Data.Parcel.ParcDesc, gpsHand.GpsPositioons);
+                    copyholder.Parcel = copyParcel;
+                } 
+                if(actualHolder.Data.Property is not null) {
+                    GpsPosHandler gpsHand = new GpsPosHandler();
+                    GpsPosition gps1 = new GpsPosition(actualHolder.Data.Property.GpsPosHandler.GpsPositioons[0].Width, actualHolder.Data.Property.GpsPosHandler.GpsPositioons[0].WidthPosition, actualHolder.Data.Property.GpsPosHandler.GpsPositioons[0].Length, actualHolder.Data.Property.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                    gpsHand.GpsPositioons[0] = gps1;
+                    GpsPosition gps2 = new GpsPosition(actualHolder.Data.Property.GpsPosHandler.GpsPositioons[1].Width, actualHolder.Data.Property.GpsPosHandler.GpsPositioons[1].WidthPosition, actualHolder.Data.Property.GpsPosHandler.GpsPositioons[1].Length, actualHolder.Data.Property.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                    gpsHand.GpsPositioons[1] = gps2;
+
+                    Property copyProperty = new Property(actualHolder.Data.Property.PropertyId, actualHolder.Data.Property.InventNo, actualHolder.Data.Property.PropDesc, gpsHand.GpsPositioons);
+                    copyholder.Property = copyProperty;
+                }
+                
+                copyHolderList.Add(copyholder);
+            }
+        }
+
+        return copyHolderList;
+    }
+
     internal void RemoveParc(Parcel parcel) {
         PropParcHolder holder = new PropParcHolder();
         holder.Parcel = parcel;

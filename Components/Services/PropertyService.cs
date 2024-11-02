@@ -248,4 +248,30 @@ public class PropertyService
             }
         }
     }
+
+    internal List<Property> GetAll() {
+
+        List<Property> copyProperties = new List<Property>();
+
+        var foundElements = _propertyTree.InOrder();
+        if (foundElements == null || !foundElements.Any())
+        {
+            return copyProperties;
+        }
+
+        foreach(var copyProp in foundElements) {
+            if(copyProp is not null) {
+                GpsPosHandler gpsHand = new GpsPosHandler();
+                GpsPosition gps1 = new GpsPosition(copyProp.Data.GpsPosHandler.GpsPositioons[0].Width, copyProp.Data.GpsPosHandler.GpsPositioons[0].WidthPosition, copyProp.Data.GpsPosHandler.GpsPositioons[0].Length, copyProp.Data.GpsPosHandler.GpsPositioons[0].LengthPosition);
+                gpsHand.GpsPositioons[0] = gps1;
+                GpsPosition gps2 = new GpsPosition(copyProp.Data.GpsPosHandler.GpsPositioons[1].Width, copyProp.Data.GpsPosHandler.GpsPositioons[1].WidthPosition, copyProp.Data.GpsPosHandler.GpsPositioons[1].Length, copyProp.Data.GpsPosHandler.GpsPositioons[1].LengthPosition);
+                gpsHand.GpsPositioons[1] = gps2;
+                
+                Property copyProperty = new Property(copyProp.Data.PropertyId, copyProp.Data.InventNo, copyProp.Data.PropDesc, gpsHand.GpsPositioons);
+                copyProperties.Add(copyProperty);
+            }
+        }
+
+        return copyProperties;
+    }
 }
