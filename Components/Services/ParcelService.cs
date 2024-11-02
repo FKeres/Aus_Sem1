@@ -100,6 +100,7 @@ public class ParcelService
         List<Key> keys2 = [key3, key4];
 
         _parcelTree.RemoveExactElement(keys2, parcel);
+        _home.RemoveParc(parcel);
 
         foreach(var prop in parcel.GetProperties()) {
             prop.RemoveParcelEq(parcel);

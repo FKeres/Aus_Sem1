@@ -289,13 +289,22 @@ else
 
     void RemoveProperty(Property property) {
         PropertyService.RemoveProperty(property);
-        //HomeService.RemoveProp(property);
+        _propertiesToShow.Remove(property);
         StateHasChanged();
     }
 
     void EditProperty(Property property) {
         PropertyService.EditProperty(_originalProp, property);
-        //HomeService.EditProperty(_originalProp, property);
+        _originalProp.InventNo = property.InventNo;
+        _originalProp.PropDesc = property.PropDesc;
+        _originalProp.GpsPosHandler.GpsPositioons[0].Width = property.GpsPosHandler.GpsPositioons[0].Width;
+        _originalProp.GpsPosHandler.GpsPositioons[0].WidthPosition = property.GpsPosHandler.GpsPositioons[0].WidthPosition;
+        _originalProp.GpsPosHandler.GpsPositioons[0].Length = property.GpsPosHandler.GpsPositioons[0].Length;
+        _originalProp.GpsPosHandler.GpsPositioons[0].LengthPosition = property.GpsPosHandler.GpsPositioons[0].LengthPosition;
+        _originalProp.GpsPosHandler.GpsPositioons[1].Width = property.GpsPosHandler.GpsPositioons[1].Width;
+        _originalProp.GpsPosHandler.GpsPositioons[1].WidthPosition = property.GpsPosHandler.GpsPositioons[1].WidthPosition;
+        _originalProp.GpsPosHandler.GpsPositioons[1].Length = property.GpsPosHandler.GpsPositioons[1].Length;
+        _originalProp.GpsPosHandler.GpsPositioons[1].LengthPosition = property.GpsPosHandler.GpsPositioons[1].LengthPosition;
         isEditDialogVisible = false;
         StateHasChanged();
     }

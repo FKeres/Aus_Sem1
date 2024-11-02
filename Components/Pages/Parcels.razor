@@ -288,13 +288,22 @@ else
 
     void RemoveParcel(Parcel parcel) {
         ParcelService.RemoveParcel(parcel);
-        //HomeService.RemoveParc(parcel);
+        _parcelsToShow.Remove(parcel);
         StateHasChanged();
     }
 
     void EditParcel(Parcel parcel) {
         ParcelService.EditParcel(_originalParc, parcel);
-        //HomeService.EditParcel(_originalParc, parcel);
+        _originalParc.ParcNo = parcel.ParcNo;
+        _originalParc.ParcDesc = parcel.ParcDesc;
+        _originalParc.GpsPosHandler.GpsPositioons[0].Width = parcel.GpsPosHandler.GpsPositioons[0].Width;
+        _originalParc.GpsPosHandler.GpsPositioons[0].WidthPosition = parcel.GpsPosHandler.GpsPositioons[0].WidthPosition;
+        _originalParc.GpsPosHandler.GpsPositioons[0].Length = parcel.GpsPosHandler.GpsPositioons[0].Length;
+        _originalParc.GpsPosHandler.GpsPositioons[0].LengthPosition = parcel.GpsPosHandler.GpsPositioons[0].LengthPosition;
+        _originalParc.GpsPosHandler.GpsPositioons[1].Width = parcel.GpsPosHandler.GpsPositioons[1].Width;
+        _originalParc.GpsPosHandler.GpsPositioons[1].WidthPosition = parcel.GpsPosHandler.GpsPositioons[1].WidthPosition;
+        _originalParc.GpsPosHandler.GpsPositioons[1].Length = parcel.GpsPosHandler.GpsPositioons[1].Length;
+        _originalParc.GpsPosHandler.GpsPositioons[1].LengthPosition = parcel.GpsPosHandler.GpsPositioons[1].LengthPosition;
         isEditDialogVisible = false;
         StateHasChanged();
     }
