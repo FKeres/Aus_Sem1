@@ -71,15 +71,19 @@ class Property :TerritorialUnit<Parcel>
     }
 
     public void AddParcel(Parcel parcel) {
-        this.AddListElement(parcel);
+        AddListElement(parcel);
     }
 
     public Parcel GetParcel(int position) {
-        return this.GetListItem(position);
+        return GetListItem(position);
     }
 
     public void RemoveParcel(int position) {
-        this.RemoveListElement(position);
+        RemoveListElement(position);
+    }
+
+    public List<Parcel> GetParcels() {
+        return Items;
     }
 
     public override bool Equals(object? obj)

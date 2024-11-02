@@ -1,4 +1,5 @@
 using System.Text;
+using AusSemClient_1_.Components.Pages;
 
 public class ParcelService
 {
@@ -6,13 +7,15 @@ public class ParcelService
     private int _actualParcId;
     private HomeService _home;
     private readonly Random random;
+    private readonly PropertyParcelMediator _mediator;
 
-    public ParcelService(HomeService homeService)
+    public ParcelService(HomeService homeService, PropertyParcelMediator mediator)
     {
         _home = homeService;
         _parcelTree = new KDTree<Parcel>();
         _actualParcId = 0;
         random = new Random();
+        _mediator = mediator;
     }
 
     internal KDTree<Parcel> GetAllParcels()
@@ -37,6 +40,19 @@ public class ParcelService
         _home.AddParcel(_actualParcId, parcNo, parcDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
 
         ++_actualParcId;
+        List<Property> properties1 = new();
+        List<Property> properties2 = new();
+
+        properties1 = _mediator.SearchProperties(parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition, parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        properties2 = _mediator.SearchProperties(parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition, parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        
+        foreach(var prop1 in properties1) {
+            parcel.AddProperty(prop1);
+        }
+
+        foreach(var prop2 in properties2) {
+            parcel.AddProperty(prop2);
+        }
     }
 
     internal List<Parcel> SearchParcels(double gpsWToSearch, double gpsLToSearch) {
@@ -46,7 +62,14 @@ public class ParcelService
         List<Key> keys = [key1, key2];
 
         List<Parcel> copyParcels = new List<Parcel>();
-        foreach(var copyParc in _parcelTree.FindElement(keys)) {
+
+        var foundElements = _parcelTree.FindElement(keys);
+        if (foundElements == null || !foundElements.Any())
+        {
+            return copyParcels;
+        }
+
+        foreach(var copyParc in foundElements) {
             if(copyParc is not null) {
 
                 GpsPosHandler gpsHand = new GpsPosHandler();
@@ -77,6 +100,32 @@ public class ParcelService
         List<Key> keys2 = [key3, key4];
 
         _parcelTree.RemoveExactElement(keys2, parcel);
+
+        List<Property> properties1 = new();
+        List<Property> properties2 = new();
+
+        properties1 = _mediator.SearchProperties(parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition, parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        properties2 = _mediator.SearchProperties(parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition, parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        
+        foreach(var prop1 in properties1) {
+            int i = 0;
+            foreach(var parc1 in prop1.GetParcels()) {
+                if(parc1.Equals(parcel)) {
+                    prop1.RemoveParcel(i);
+                }
+                ++i;
+            }
+        }
+
+        foreach(var prop2 in properties2) {
+            int i = 0;
+            foreach(var parc2 in prop2.GetParcels()) {
+                if(parc2.Equals(parcel)) {
+                    prop2.RemoveParcel(i);
+                }
+                ++i;
+            }
+        }
     }
     
     internal void EditParcel(Parcel oldParc, Parcel newParc) {
@@ -118,6 +167,32 @@ public class ParcelService
 
                 _parcelTree.RemoveExactElement(keys2, node1[0].Data);
 
+                List<Property> properties1 = new();
+                List<Property> properties2 = new();
+
+                properties1 = _mediator.SearchProperties(node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                properties2 = _mediator.SearchProperties(node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                
+                foreach(var prop1 in properties1) {
+                    int i = 0;
+                    foreach(var parc1 in prop1.GetParcels()) {
+                        if(parc1.Equals(node1[0].Data)) {
+                            prop1.RemoveParcel(i);
+                        }
+                        ++i;
+                    }
+                }
+
+                foreach(var prop2 in properties2) {
+                    int i = 0;
+                    foreach(var parc2 in prop2.GetParcels()) {
+                        if(parc2.Equals(node1[0].Data)) {
+                            prop2.RemoveParcel(i);
+                        }
+                        ++i;
+                    }
+                }
+
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition = newParc.GpsPosHandler.GetGpsPosition(0).WidthPosition;
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition = newParc.GpsPosHandler.GetGpsPosition(0).LengthPosition;
                 node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition = newParc.GpsPosHandler.GetGpsPosition(1).WidthPosition;
@@ -136,6 +211,20 @@ public class ParcelService
                 List<Key> keys4 = [key7, key8];
 
                 _parcelTree.AddElement(keys4, node1[0].Data);
+
+                List<Property> properties3 = new();
+                List<Property> properties4 = new();
+
+                properties3 = _mediator.SearchProperties(node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                properties4 = _mediator.SearchProperties(node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                
+                foreach(var prop1 in properties1) {
+                    node1[0].Data.AddProperty(prop1);
+                }
+
+                foreach(var prop2 in properties2) {
+                    node1[0].Data.AddProperty(prop2);
+                }
             }
         }
 

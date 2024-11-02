@@ -83,6 +83,10 @@ class Parcel :TerritorialUnit<Property>
         this.RemoveListElement(position);
     }
 
+    public List<Property> GetProperties() {
+        return Items;
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is Parcel other)

@@ -7,13 +7,15 @@ public class PropertyService
     private int _actualPropId;
     private HomeService _home;
     private readonly Random random;
+    private readonly PropertyParcelMediator _mediator;
 
-    public PropertyService(HomeService homeService)
+    public PropertyService(HomeService homeService, PropertyParcelMediator mediator)
     {
         _home = homeService;
         _propertyTree = new KDTree<Property>();
         _actualPropId = 0;
         random = new Random();
+        _mediator = mediator;
     }
 
     internal KDTree<Property> GetAllProperties()
@@ -39,6 +41,20 @@ public class PropertyService
         
         _home.AddProperty(_actualPropId, inventNo, propDesc, gps1Width, gps1WidthPosition, gps1Length, gps1LengthPosition, gps2Width, gps2WidthPosition, gps2Length, gps2LengthPosition);
         ++_actualPropId;
+
+        List<Parcel> parcels1 = new();
+        List<Parcel> parcels2 = new();
+
+        parcels1 = _mediator.SearchParcels(property.GpsPosHandler.GetGpsPosition(0).WidthPosition, property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        parcels2 = _mediator.SearchParcels(property.GpsPosHandler.GetGpsPosition(1).WidthPosition, property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        
+        foreach(var parc1 in parcels1) {
+            property.AddParcel(parc1);
+        }
+
+        foreach(var parc2 in parcels2) {
+            property.AddParcel(parc2);
+        }
     }
 
     internal List<Property> SearchProperties(double gpsWToSearch, double gpsLToSearch) {
@@ -46,7 +62,14 @@ public class PropertyService
         List<Key> keys = [new Key(gpsWToSearch),  new Key(gpsLToSearch)];
 
         List<Property> copyProperties = new List<Property>();
-        foreach(var copyProp in _propertyTree.FindElement(keys)) {
+
+        var foundElements = _propertyTree.FindElement(keys);
+        if (foundElements == null || !foundElements.Any())
+        {
+            return copyProperties;
+        }
+
+        foreach(var copyProp in foundElements) {
             if(copyProp is not null) {
                 GpsPosHandler gpsHand = new GpsPosHandler();
                 GpsPosition gps1 = new GpsPosition(copyProp.GpsPosHandler.GpsPositioons[0].Width, copyProp.GpsPosHandler.GpsPositioons[0].WidthPosition, copyProp.GpsPosHandler.GpsPositioons[0].Length, copyProp.GpsPosHandler.GpsPositioons[0].LengthPosition);
@@ -77,6 +100,32 @@ public class PropertyService
 
         _propertyTree.RemoveExactElement(keys2, property);
         _home.RemoveProp(property);
+
+        List<Parcel> parcels1 = new();
+        List<Parcel> parcels2 = new();
+
+        parcels1 = _mediator.SearchParcels(property.GpsPosHandler.GetGpsPosition(0).WidthPosition, property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        parcels2 = _mediator.SearchParcels(property.GpsPosHandler.GetGpsPosition(1).WidthPosition, property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        
+        foreach(var parc1 in parcels1) {
+            int i = 0;
+            foreach(var prop1 in parc1.GetProperties()) {
+                if(prop1.Equals(property)) {
+                    parc1.RemoveProperty(i);
+                }
+                ++i;
+            }
+        }
+
+        foreach(var parc2 in parcels2) {
+            int i = 0;
+            foreach(var prop2 in parc2.GetProperties()) {
+                if(prop2.Equals(property)) {
+                    parc2.RemoveProperty(i);
+                }
+                ++i;
+            }
+        }
     }
 
     internal void EditProperty(Property oldProp, Property newProp) {
@@ -119,6 +168,32 @@ public class PropertyService
 
                 _propertyTree.RemoveExactElement(keys2, node1[0].Data);
 
+                List<Parcel> parcels1 = new();
+                List<Parcel> parcels2 = new();
+
+                parcels1 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                parcels2 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                
+                foreach(var parc1 in parcels1) {
+                    int i = 0;
+                    foreach(var prop1 in parc1.GetProperties()) {
+                        if(prop1.Equals(node1[0].Data)) {
+                            parc1.RemoveProperty(i);
+                        }
+                        ++i;
+                    }
+                }
+
+                foreach(var parc2 in parcels2) {
+                    int i = 0;
+                    foreach(var prop2 in parc2.GetProperties()) {
+                        if(prop2.Equals(node1[0].Data)) {
+                            parc2.RemoveProperty(i);
+                        }
+                        ++i;
+                    }
+                }
+
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition = newProp.GpsPosHandler.GetGpsPosition(0).WidthPosition;
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition = newProp.GpsPosHandler.GetGpsPosition(0).LengthPosition;
                 node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition = newProp.GpsPosHandler.GetGpsPosition(1).WidthPosition;
@@ -137,14 +212,28 @@ public class PropertyService
                 List<Key> keys4 = [key7, key8];
 
                 _propertyTree.AddElement(keys4, node1[0].Data);
+                List<Parcel> parcels3 = new();
+                List<Parcel> parcels4 = new();
+
+                parcels1 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                parcels2 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                
+                foreach(var parc1 in parcels3) {
+                    node1[0].Data.AddParcel(parc1);
+                }
+
+                foreach(var parc2 in parcels4) {
+                    node1[0].Data.AddParcel(parc2);
+                }
             }
         }
         _home.EditProperty(oldProp, newProp);
     }
 
-    internal void GenerateProp(int num, int perc, List<List<double>> keys) {
+    internal void GenerateProp(int num, double perc, List<List<double>> keys) {
         char[] directions = { 'N', 'S', 'W', 'E' };
         int keyIndex;
+        perc = perc/100;
 
         for(int i = 0; i < num; ++i) {
             double gpsW1 = Math.Round(random.NextDouble() * 50,2);
@@ -153,10 +242,14 @@ public class PropertyService
             double gpsL2 = Math.Round(random.NextDouble() * 50,2);
             int inventNo = random.Next(50);
 
-            if(random.NextDouble() <= perc) {
+            Console.WriteLine(perc);
+            double cover = random.NextDouble();
+            Console.WriteLine(cover);
+            if(cover <= perc) {
                 keyIndex =random.Next(keys.Count);
                 gpsW1 = keys[keyIndex][0];
                 gpsL1 = keys[keyIndex][1];
+                Console.WriteLine($"keys W - {gpsW1} L - {gpsL1}");
             }
 
             int maxLeng = 10;
@@ -170,7 +263,6 @@ public class PropertyService
             }
 
             string propDesc = stringBuilder.ToString();
-            Console.WriteLine("Key1 " + gpsW1 + " Key2 " + gpsL1);
             AddProperty(inventNo, propDesc, directions[random.Next(directions.Length)], gpsW1, directions[random.Next(directions.Length)], gpsL1, directions[random.Next(directions.Length)], gpsW2, directions[random.Next(directions.Length)], gpsL2);
         }
     }

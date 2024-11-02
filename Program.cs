@@ -8,6 +8,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<PropertyService>();
 builder.Services.AddSingleton<ParcelService>();
 builder.Services.AddSingleton<HomeService>();
+builder.Services.AddSingleton<PropertyParcelMediator>();
+
 
 var app = builder.Build();
 

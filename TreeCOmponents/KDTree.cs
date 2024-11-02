@@ -145,6 +145,8 @@ class KDTree<T> : IEnumerable<T>
     /// <returns>List<T></returns>
     /// <exception cref="ArgumentException"></exception>
     public List<T> FindElement(List<Key> keys) {
+        bool firstFound = false;
+
         if (!CheckKeyDimensionsFromK(keys)) {
             throw new ArgumentException("Key List does not contain correct number of dimensions.");
         }
@@ -159,8 +161,15 @@ class KDTree<T> : IEnumerable<T>
         int compResult;
         List<T> items = new List<T>();
 
+        compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+        firstFound = compResult == 0;
+
         while(!itemsFound) {
             compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+            if(firstFound && compResult != 0) {
+                break;
+            }
+            firstFound = compResult == 0;
 
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys)) {
@@ -172,7 +181,6 @@ class KDTree<T> : IEnumerable<T>
                 } else {
                     itemsFound = true;
                 }
-
             } else {
                 if (actualNode.HasRightSon()) {
                     actualNode = actualNode.RightN;
@@ -195,6 +203,8 @@ class KDTree<T> : IEnumerable<T>
     /// <returns>List<T></returns>
     /// <exception cref="ArgumentException"></exception>
     public List<Node<T>> FindNode(List<Key> keys) {
+        bool firstFound = false;
+
         if (!CheckKeyDimensionsFromK(keys)) {
             throw new ArgumentException("Key List does not contain correct number of dimensions.");
         }
@@ -209,8 +219,16 @@ class KDTree<T> : IEnumerable<T>
         int compResult;
         List<Node<T>> items = new List<Node<T>>();
 
+        compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+        firstFound = compResult == 0;
+
         while(!itemsFound) {
             compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+            
+             if(firstFound && compResult != 0) {
+                break;
+            }
+            firstFound = compResult == 0;
 
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys)) {
@@ -265,6 +283,7 @@ class KDTree<T> : IEnumerable<T>
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys) && actualNode.Data.Equals(data)) {
                     items.Add(actualNode);
+                    break;
                 }
 
                 if (actualNode.HasLeftSon()) {

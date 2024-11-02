@@ -10,6 +10,8 @@ class Test
     private readonly Random random;
     private KDTree<int> _tree;
     private List<Node<int>> _list;
+    private KDTree<string> _treeDel;
+    private List<Node<string>> _listDel;
     private int _operationsNum;
     private int _treeDimension;
 
@@ -19,6 +21,8 @@ class Test
     public Test(int operationsNum, int treeDimension, int seed) {
         _tree = new KDTree<int>();
         _list = new List<Node<int>>();
+        _treeDel = new KDTree<string>();
+        _listDel = new List<Node<string>>();
         _operationsNum = operationsNum;
         _treeDimension = treeDimension;
         random = new Random(seed);
@@ -27,6 +31,8 @@ class Test
     public Test(int operationsNum, int treeDimension) {
         _tree = new KDTree<int>();
         _list = new List<Node<int>>();
+        _treeDel = new KDTree<string>();
+        _listDel = new List<Node<string>>();
         _operationsNum = operationsNum;
         _treeDimension = treeDimension;
         random = new Random();
@@ -332,7 +338,7 @@ class Test
         }
         */
         
-        if((_list is not null && treeList is not null)){ 
+        if(_list is not null && treeList is not null){ 
             if(_list.Count == treeList.Count) {
                 foreach(var listItem in _list) {
                     if(_tree.FindExactNode(listItem.Keys, listItem.Data)[0] is null) {
@@ -342,6 +348,230 @@ class Test
                 return true;
             }
         }else if ((_list is  null && treeList is  null) || (_list.Count == 0 && treeList is null)) {
+            return true;
+        } else {
+            return false;
+        }
+
+        return false;
+    }
+    
+    public async Task<bool> TestOperDelivery() {
+        
+        int operation;
+        Stopwatch stopwatch = new Stopwatch();
+
+        List<List<Key>> keyList = new List<List<Key>>();
+        List<string> dataList = new List<string>();
+
+
+        for (int t = 0; t < 20000; t++) {
+            List<Key> keys = GenerateKeysForDeliv();
+            int maxLeng = 10;
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            StringBuilder stringBuilder = new StringBuilder(maxLeng);
+
+            for (int d = 0; d < maxLeng; d++)
+            {
+                int index = random.Next(chars.Length);
+                stringBuilder.Append(chars[index]);
+            }
+
+            string data = stringBuilder.ToString();
+
+            Node<string> node = new Node<string>(keys, data, null, null, null);
+            keyList.Add(keys);
+            dataList.Add(data);
+            stopwatch.Start();
+            _treeDel.AddNode(node);
+            stopwatch.Stop();
+            Console.WriteLine("insert : " + stopwatch.Elapsed + " - Data - " + data);
+            foreach(var keyVar in node.Keys) {
+                Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+            }
+
+            Console.WriteLine();
+            _listDel.Add(node);
+        }
+
+        for(int i = 0; i < _operationsNum; ++i){
+            operation = GenerateOperation();
+            Console.WriteLine("operation - " + operation);
+            if(operation == 1) {
+                List<Key> keys = GenerateKeysForDeliv();
+
+                int maxLeng = 10;
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+                StringBuilder stringBuilder = new StringBuilder(maxLeng);
+
+                for (int d = 0; d < maxLeng; d++)
+                {
+                    int index = random.Next(chars.Length);
+                    stringBuilder.Append(chars[index]);
+                }
+
+                string data = stringBuilder.ToString();
+
+                Node<string> node = new Node<string>(keys, data, null, null, null);
+                keyList.Add(keys);
+                dataList.Add(data);
+                stopwatch.Start();
+                _treeDel.AddNode(node);
+                stopwatch.Stop();
+                Console.WriteLine("operation " + i + " :  insert : " + stopwatch.Elapsed + " - Data - " + data);
+                foreach(var keyVar in node.Keys) {
+                    Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                }
+
+                Console.WriteLine();
+                _listDel.Add(node);
+
+                List<Node<string>> treeListAdd = _treeDel.InOrder();
+                if(_listDel is not null && treeListAdd is not null){ 
+                    if(_listDel.Count == treeListAdd.Count) {
+                        foreach(var listItem in _listDel) {
+                            if(_treeDel.FindExactNode(listItem.Keys, listItem.Data)[0] is null) {
+                                throw new ArgumentException("Count of elements is not the same");
+                            }
+                        }
+                    }
+                } else {
+                    throw new ArgumentException("Count of elements is not the same");
+                }
+
+            } else if (operation == 0 ){
+                List<Key> keys = new List<Key>();
+                string data;
+                if(_listDel.Count > 0) {
+                    int rand = random.Next(_listDel.Count);
+                    keys = _listDel[rand].Keys;
+                    data = _listDel[rand].Data;
+                    stopwatch.Start();
+                    if(_treeDel.FindExactNode(keys, data)[0] is null) {
+                        throw new ArgumentException("Element not found in tree");
+                    }
+                    stopwatch.Stop();
+                    Console.WriteLine("operation " + i + " find : " + stopwatch.Elapsed + " - Data - " + data);
+                    foreach(var keyVar in keys) {
+                        Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                    }
+
+                    Console.WriteLine();
+                    List<Node<string>> treeListFind = _treeDel.InOrder();
+                    if(_listDel is not null && treeListFind is not null){ 
+                        if(_listDel.Count == treeListFind.Count) {
+                            foreach(var listItem in _listDel) {
+                                if(_treeDel.FindExactNode(listItem.Keys, listItem.Data)[0] is null) {
+                                    throw new ArgumentException("Count of elements is not the same");
+                                }
+                            }
+                        }
+                    } else {
+                        throw new ArgumentException("Count of elements is not the same");
+                    }
+                }
+            } else if(operation == 2) {
+                if(_listDel.Count != 0) {
+                    int rand = random.Next(_listDel.Count);
+
+                    int maxLeng = 10;
+                    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+                    StringBuilder stringBuilder = new StringBuilder(maxLeng);
+
+                    for (int d = 0; d < maxLeng; d++)
+                    {
+                        int index = random.Next(chars.Length);
+                        stringBuilder.Append(chars[index]);
+                    }
+
+                    string data = stringBuilder.ToString();
+
+                    Node<string> node = new Node<string>(_listDel[rand].Keys, data, null, null, null);
+                    keyList.Add(_listDel[rand].Keys);
+                    dataList.Add(data);
+                    stopwatch.Start();
+                    _treeDel.AddNode(node);
+                    stopwatch.Stop();
+                    Console.WriteLine("operation " + i + " insert duplicate  : " + stopwatch.Elapsed + " - Data - " + i);
+                    foreach(var keyVar in node.Keys) {
+                        Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                    }
+                    Console.WriteLine();
+
+                    _listDel.Add(node);
+
+                    List<Node<string>> treeListDupl = _treeDel.InOrder();
+                    if(_listDel is not null && treeListDupl is not null){ 
+                        if(_listDel.Count == treeListDupl.Count) {
+                            foreach(var listItem in _listDel) {
+                                if(_treeDel.FindExactNode(listItem.Keys, listItem.Data)[0] is null) {
+                                    throw new ArgumentException("Count of elements is not the same");
+                                }
+                            }
+                        }
+                    } else {
+                        throw new ArgumentException("Count of elements is not the same");
+                    }
+                }
+            } else {
+                
+                List<Key> keys = new List<Key>();
+                string data;
+
+                if(keyList.Count != 0) {
+                    int rand = random.Next(keyList.Count);
+                    keys = keyList[rand];
+                    data = dataList[rand];
+                    List<Node<string>> deletion;
+                    deletion = _treeDel.FindExactNode(keys, data);
+                    stopwatch.Start();
+                    _treeDel.RemoveExactElement(keys, data);
+                    stopwatch.Stop();
+                    Console.WriteLine("operation " + i + " remove : " + stopwatch.Elapsed + " - Data - " + data);
+                    foreach(var keyVar in keys) {
+                        Console.Write(" " + keyVar.KeyAttr.ToString() + " ");
+                    }
+                    Console.WriteLine();
+
+                    if(deletion is not null) {
+                        foreach(var del in deletion) {
+                            _listDel.Remove(del);
+                        }
+                    }
+                }
+
+                List<Node<string>> treeListRem = _treeDel.InOrder();
+                if(_listDel is not null && treeListRem is not null){ 
+                    if(_listDel.Count == treeListRem.Count) {
+                        foreach(var listItem in _listDel) {
+                            if(_treeDel.FindExactNode(listItem.Keys, listItem.Data)[0] is null) {
+                                throw new ArgumentException("Count of elements is not the same");
+                            }
+                        }
+                    }
+                } else {
+                    throw new ArgumentException("Count of elements is not the same");
+                }
+
+            }
+        }
+
+        Console.WriteLine("inorder start");
+        stopwatch.Start();
+        List<Node<string>> treeListDel = _treeDel.InOrder();
+        stopwatch.Stop();
+        Console.WriteLine("inorder done - " + stopwatch.Elapsed);
+
+        if(_listDel is not null && treeListDel is not null){ 
+            if(_listDel.Count == treeListDel.Count) {
+                foreach(var listItem in _listDel) {
+                    if(_treeDel.FindExactNode(listItem.Keys, listItem.Data)[0] is null) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }else if ((_listDel is  null && treeListDel is  null) || (_listDel.Count == 0 && treeListDel is null)) {
             return true;
         } else {
             return false;
@@ -376,6 +606,7 @@ class Test
     /// <returns>int</returns>
     public int GenerateOperation() {
         double number = random.NextDouble();
+        Console.WriteLine("number - " + number);
         
         if(number < 0.5) {
             return 1;
@@ -415,6 +646,16 @@ class Test
         Level4 level4 = new Level4(b, c);
 
         List<Key> keys = [new Key(level1), new Key(level2), new Key(level3), new Key(level4)];
+        
+        return keys;
+    }
+
+    public List<Key> GenerateKeysForDeliv() {
+
+        double x = random.Next(50);
+        double y = random.Next(50);
+
+        List<Key> keys = [new Key(x), new Key(y)];
         
         return keys;
     }

@@ -59,7 +59,14 @@ public class HomeService
 
         List<PropParcHolder> copyHolderList = new List<PropParcHolder>();
 
-        foreach(var actualHolder in _tree.FindElement(keys)) {
+        var foundElements = _tree.FindElement(keys);
+        if (foundElements == null || !foundElements.Any())
+        {
+            return copyHolderList;
+        }
+
+
+        foreach(var actualHolder in foundElements) {
             if(actualHolder is not null) {
                 PropParcHolder copyholder = new PropParcHolder();
                 if(actualHolder.Parcel is not null) {
@@ -260,8 +267,8 @@ public class HomeService
     }
 
     public async Task<bool> TestOperations(int operationCount) {
-        Test test = new Test(operationCount, 4);
-        return await test.TestOperationsKont2();
+        Test test = new Test(operationCount, 2);
+        return await test.TestOperDelivery();
     }
 
 }

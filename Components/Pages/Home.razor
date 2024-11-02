@@ -247,7 +247,7 @@ else
                         <input type="number" class="form-control" id="parcNum" @bind="_parcNum" />
                     </div>
                     <div class="mb-3">
-                        <label for="coverPerc" class="form-label">Number of generated parcels</label>
+                        <label for="coverPerc" class="form-label">Percent of covering (type whole number like 50 or 20 ...)</label>
                         <input type="number" class="form-control" id="coverPerc" @bind="_coverPerc" />
                     </div>
                 </div>
@@ -404,6 +404,7 @@ else
     void Generate() {
         List<List<double>> keys = new List<List<double>>();
         keys = ParcelService.GenerateParc(_parcNum);
+        Console.WriteLine(_coverPerc);
         PropertyService.GenerateProp(_propNum, _coverPerc, keys);
         isGenerateDialogVisible = false;
         StateHasChanged();
