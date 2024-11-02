@@ -242,14 +242,11 @@ public class PropertyService
             double gpsL2 = Math.Round(random.NextDouble() * 50,2);
             int inventNo = random.Next(50);
 
-            Console.WriteLine(perc);
             double cover = random.NextDouble();
-            Console.WriteLine(cover);
             if(cover <= perc) {
                 keyIndex =random.Next(keys.Count);
                 gpsW1 = keys[keyIndex][0];
                 gpsL1 = keys[keyIndex][1];
-                Console.WriteLine($"keys W - {gpsW1} L - {gpsL1}");
             }
 
             int maxLeng = 10;
@@ -269,7 +266,8 @@ public class PropertyService
 
     public void SaveState(string filePath) {
         using (StreamWriter writer = new StreamWriter(filePath)) {
-            //writer.WriteLine($"ACTUALPARCID:{_actualParcId};");
+            writer.WriteLine("PROPERTYID,INVENTNO,PROPDESC,GPSW1,GPSWP1,GPSL1,GPSLP1,GPSW2,GPSWP2,GPSL2,GPSLP2");
+
             foreach(var prop in _propertyTree.LevelOrderIter()) {
                 string line = prop.Serialize();
                 writer.WriteLine(line);
@@ -280,13 +278,10 @@ public class PropertyService
     public void LoadState(string filePath) {
         List<int> propIds = new List<int>();
         using (StreamReader reader = new StreamReader(filePath)) {
-            //string? actualParcIdLine = reader.ReadLine();
-
-            //if (actualPropIdLine != null && actualPropIdLine.StartsWith("ACTUALPROPID:")) {
-                //_actualPropId = int.Parse(actualPropIdLine.Split(':')[1].TrimEnd(';'));
-            //}
 
             string? line;
+            reader.ReadLine();
+
             while ((line = reader.ReadLine()) != null) {
                 Property property = new Property();
                 property.DeSerialize(line);

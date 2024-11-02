@@ -265,32 +265,31 @@ public class ParcelService
 
     public void SaveState(string filePath) {
         using (StreamWriter writer = new StreamWriter(filePath)) {
-            //writer.WriteLine($"ACTUALPARCID:{_actualParcId};");
-            foreach(var parc in _parcelTree.LevelOrderIter()) {
+            writer.WriteLine("PARCELID,PARCNO,PARCDESC,GPSW1,GPSWP1,GPSL1,GPSLP1,GPSW2,GPSWP2,GPSL2,GPSLP2");
+
+            foreach (var parc in _parcelTree.LevelOrderIter()) {
                 string line = parc.Serialize();
                 writer.WriteLine(line);
             }
         }
     }
 
+
     public void LoadState(string filePath) {
         List<int> parcIds = new List<int>();
         using (StreamReader reader = new StreamReader(filePath)) {
-            //string? actualParcIdLine = reader.ReadLine();
-
-            //if (actualParcIdLine != null && actualParcIdLine.StartsWith("ACTUALPARCID:")) {
-                //_actualParcId = int.Parse(actualParcIdLine.Split(':')[1].TrimEnd(';'));
-            //}
+            string? headerLine = reader.ReadLine();
 
             string? line;
             while ((line = reader.ReadLine()) != null) {
                 Parcel parcel = new Parcel();
                 parcel.DeSerialize(line);
-                if(!parcIds.Contains(parcel.ParcelId)) {
+                if (!parcIds.Contains(parcel.ParcelId)) {
                     parcIds.Add(parcel.ParcelId);
                     AddParcel(parcel.ParcNo, parcel.ParcDesc, parcel.GpsPosHandler.GpsPositioons[0].Width, parcel.GpsPosHandler.GpsPositioons[0].WidthPosition, parcel.GpsPosHandler.GpsPositioons[0].Length, parcel.GpsPosHandler.GpsPositioons[0].LengthPosition, parcel.GpsPosHandler.GpsPositioons[1].Width, parcel.GpsPosHandler.GpsPositioons[1].WidthPosition, parcel.GpsPosHandler.GpsPositioons[1].Length, parcel.GpsPosHandler.GpsPositioons[1].LengthPosition);
-                }          
+                }
             }
         }
     }
+
 }
