@@ -50,10 +50,12 @@ public class PropertyService
         
         foreach(var parc1 in parcels1) {
             property.AddParcel(parc1);
+            parc1.AddProperty(property);
         }
 
         foreach(var parc2 in parcels2) {
             property.AddParcel(parc2);
+            parc2.AddProperty(property);
         }
     }
 
@@ -176,10 +178,12 @@ public class PropertyService
                 
                 foreach(var parc1 in parcels3) {
                     node1[0].Data.AddParcel(parc1);
+                    parc1.AddProperty(node1[0].Data); 
                 }
 
                 foreach(var parc2 in parcels4) {
                     node1[0].Data.AddParcel(parc2);
+                    parc2.AddProperty(node1[0].Data); 
                 }
             }
         }

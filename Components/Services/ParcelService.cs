@@ -48,10 +48,12 @@ public class ParcelService
         
         foreach(var prop1 in properties1) {
             parcel.AddProperty(prop1);
+            prop1.AddParcel(parcel);
         }
 
         foreach(var prop2 in properties2) {
             parcel.AddProperty(prop2);
+            prop2.AddParcel(parcel);
         }
     }
 
@@ -177,10 +179,12 @@ public class ParcelService
                 
                 foreach(var prop1 in properties3) {
                     node1[0].Data.AddProperty(prop1);
+                    prop1.AddParcel(node1[0].Data);
                 }
 
                 foreach(var prop2 in properties4) {
                     node1[0].Data.AddProperty(prop2);
+                    prop2.AddParcel(node1[0].Data);
                 }
             }
         }
