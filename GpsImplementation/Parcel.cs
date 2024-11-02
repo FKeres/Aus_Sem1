@@ -83,6 +83,10 @@ class Parcel :TerritorialUnit<Property>
         this.RemoveListElement(position);
     }
 
+    public void RemovePropertyEq(Property property) {
+        this.RemoveListElementEq(property);
+    }
+
     public List<Property> GetProperties() {
         return Items;
     }
@@ -127,7 +131,7 @@ class Parcel :TerritorialUnit<Property>
         GpsPosition gps2 = new GpsPosition(w2, wP2, l2, lP2);
         _gpsPosHandler.GpsPositioons[1] = gps2;
     }
-    
+
     #endregion
 
 }

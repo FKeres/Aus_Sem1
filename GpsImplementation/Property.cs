@@ -82,6 +82,10 @@ class Property :TerritorialUnit<Parcel>
         RemoveListElement(position);
     }
 
+    public void RemoveParcelEq(Parcel parcel) {
+        RemoveListElementEq(parcel);
+    }
+
     public List<Parcel> GetParcels() {
         return Items;
     }

@@ -30,5 +30,16 @@ public abstract class TerritorialUnit<T>
         _items.RemoveAt(position);
     }
 
+     protected void RemoveListElementEq(T item) {
+        int index = 0;
+        foreach(var thing in _items) {
+            if(_items.Equals(item)) {
+                _items.RemoveAt(index);
+                break;
+            }
+            ++index;
+        }
+    }
+
     #endregion
 }

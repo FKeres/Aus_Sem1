@@ -101,30 +101,8 @@ public class PropertyService
         _propertyTree.RemoveExactElement(keys2, property);
         _home.RemoveProp(property);
 
-        List<Parcel> parcels1 = new();
-        List<Parcel> parcels2 = new();
-
-        parcels1 = _mediator.SearchParcels(property.GpsPosHandler.GetGpsPosition(0).WidthPosition, property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
-        parcels2 = _mediator.SearchParcels(property.GpsPosHandler.GetGpsPosition(1).WidthPosition, property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
-        
-        foreach(var parc1 in parcels1) {
-            int i = 0;
-            foreach(var prop1 in parc1.GetProperties()) {
-                if(prop1.Equals(property)) {
-                    parc1.RemoveProperty(i);
-                }
-                ++i;
-            }
-        }
-
-        foreach(var parc2 in parcels2) {
-            int i = 0;
-            foreach(var prop2 in parc2.GetProperties()) {
-                if(prop2.Equals(property)) {
-                    parc2.RemoveProperty(i);
-                }
-                ++i;
-            }
+        foreach(var parc in property.GetParcels()) {
+            parc.RemovePropertyEq(property);
         }
     }
 
@@ -168,30 +146,8 @@ public class PropertyService
 
                 _propertyTree.RemoveExactElement(keys2, node1[0].Data);
 
-                List<Parcel> parcels1 = new();
-                List<Parcel> parcels2 = new();
-
-                parcels1 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition);
-                parcels2 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(1).LengthPosition);
-                
-                foreach(var parc1 in parcels1) {
-                    int i = 0;
-                    foreach(var prop1 in parc1.GetProperties()) {
-                        if(prop1.Equals(node1[0].Data)) {
-                            parc1.RemoveProperty(i);
-                        }
-                        ++i;
-                    }
-                }
-
-                foreach(var parc2 in parcels2) {
-                    int i = 0;
-                    foreach(var prop2 in parc2.GetProperties()) {
-                        if(prop2.Equals(node1[0].Data)) {
-                            parc2.RemoveProperty(i);
-                        }
-                        ++i;
-                    }
+                foreach(var parc in node1[0].Data.GetParcels()) {
+                    parc.RemovePropertyEq(node1[0].Data);
                 }
 
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition = newProp.GpsPosHandler.GetGpsPosition(0).WidthPosition;
@@ -215,8 +171,8 @@ public class PropertyService
                 List<Parcel> parcels3 = new();
                 List<Parcel> parcels4 = new();
 
-                parcels1 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition);
-                parcels2 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                parcels3 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                parcels4 = _mediator.SearchParcels(node1[0].Data.GpsPosHandler.GetGpsPosition(1).WidthPosition, node1[0].Data.GpsPosHandler.GetGpsPosition(1).LengthPosition);
                 
                 foreach(var parc1 in parcels3) {
                     node1[0].Data.AddParcel(parc1);
