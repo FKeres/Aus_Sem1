@@ -104,10 +104,18 @@ class Property :TerritorialUnit<Parcel>
         return HashCode.Combine(_propertyId);
     }
 
+    /// <summary>
+    /// returns string line of attributes in csv format
+    /// </summary>
+    /// <returns>string</returns>
     public string Serialize() {
         return $"{_propertyId},{_inventNo},{_propDesc},{_gpsPosHandler.GpsPositioons[0].Width},{_gpsPosHandler.GpsPositioons[0].WidthPosition},{_gpsPosHandler.GpsPositioons[0].Length},{_gpsPosHandler.GpsPositioons[0].LengthPosition},{_gpsPosHandler.GpsPositioons[1].Width},{_gpsPosHandler.GpsPositioons[1].WidthPosition},{_gpsPosHandler.GpsPositioons[1].Length},{_gpsPosHandler.GpsPositioons[1].LengthPosition}";
     }
 
+    /// <summary>
+    /// gets input ine that transfers into attributes 
+    /// </summary>
+    /// <param name="attributes"></param>
     public void DeSerialize(string attributes) {
         var values = attributes.Split(',');
 

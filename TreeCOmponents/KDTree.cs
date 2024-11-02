@@ -56,6 +56,8 @@ class KDTree<T> : IEnumerable<T>
 
             compResult = KDTree<T>.CompareNodeKeys(currentDimension, actualNode, nodeToBeAdded);
 
+            //compares keys and decides which way to go
+
             if(compResult <= 0) {
                 if (actualNode.HasLeftSon()) {
                     actualNode = actualNode.LeftN;
@@ -111,6 +113,8 @@ class KDTree<T> : IEnumerable<T>
 
             compResult = KDTree<T>.CompareNodeKeys(currentDimension, actualNode, nodeToBeAdded);
 
+            //compares keys and decides which way to go
+
             if(compResult <= 0) {
                 if (actualNode.HasLeftSon()) {
                     actualNode = actualNode.LeftN;
@@ -160,12 +164,17 @@ class KDTree<T> : IEnumerable<T>
         int actualCompNodeLevel = 0;
         int compResult;
         List<T> items = new List<T>();
-
+        
+        //compares the keys and desides which way to go next
         compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+
+        //checks if element was found
         firstFound = compResult == 0;
 
         while(!itemsFound) {
             compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+
+            //checks if there was found elemen if was and the one i am looking at is not find ends
             if(firstFound && compResult != 0) {
                 break;
             }
@@ -321,20 +330,23 @@ class KDTree<T> : IEnumerable<T>
         List<Node<T>> items = new List<Node<T>>();
 
         while(!allProcessed) {
-
+            
+            //travels most left
             mostLeft:
             while(actualNode.HasLeftSon()) {
                 actualNode = actualNode.LeftN;
             }
 
-            items.Add(actualNode);
-
+            items.Add(actualNode);  
+            
+            //checks  if has right son if does goes for it
             checkRight:
             if(actualNode.HasRightSon()) {
                 actualNode = actualNode.RightN;
                 goto mostLeft;
             }
 
+            //travels up the way
             upstairs:
             if(actualNode.ImLeft) {
                 actualNode = actualNode.Parent;

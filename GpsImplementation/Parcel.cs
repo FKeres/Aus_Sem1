@@ -105,10 +105,18 @@ class Parcel :TerritorialUnit<Property>
         return HashCode.Combine(_parcelId);
     }
 
+    /// <summary>
+    /// returns line in format of csv
+    /// </summary>
+    /// <returns>string</returns>
     public string Serialize() {
         return $"{_parcelId},{_parcNo},{_parcDesc},{_gpsPosHandler.GpsPositioons[0].Width},{_gpsPosHandler.GpsPositioons[0].WidthPosition},{_gpsPosHandler.GpsPositioons[0].Length},{_gpsPosHandler.GpsPositioons[0].LengthPosition},{_gpsPosHandler.GpsPositioons[1].Width},{_gpsPosHandler.GpsPositioons[1].WidthPosition},{_gpsPosHandler.GpsPositioons[1].Length},{_gpsPosHandler.GpsPositioons[1].LengthPosition}";
     }
 
+    /// <summary>
+    /// gets the line in input and transforms it into attributes of parcel
+    /// </summary>
+    /// <param name="attributes"></param>
     public void DeSerialize(string attributes) {
         var fieldValues = attributes.Split(',');
 
