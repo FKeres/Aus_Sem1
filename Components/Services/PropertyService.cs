@@ -80,6 +80,7 @@ public class PropertyService
                 gpsHand.GpsPositioons[1] = gps2;
                 
                 Property copyProperty = new Property(copyProp.PropertyId, copyProp.InventNo, copyProp.PropDesc, gpsHand.GpsPositioons);
+                copyProperty.SetParcels(copyProp.GetParcels());
                 copyProperties.Add(copyProperty);
             }
         }
@@ -104,6 +105,7 @@ public class PropertyService
         _home.RemoveProp(property);
 
         foreach(var parc in property.GetParcels()) {
+            Console.WriteLine("remov reference" + property.InventNo);
             parc.RemovePropertyEq(property);
         }
     }
@@ -151,6 +153,8 @@ public class PropertyService
                 foreach(var parc in node1[0].Data.GetParcels()) {
                     parc.RemovePropertyEq(node1[0].Data);
                 }
+
+                node1[0].Data.SetParcels(new List<Parcel>());
 
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition = newProp.GpsPosHandler.GetGpsPosition(0).WidthPosition;
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition = newProp.GpsPosHandler.GetGpsPosition(0).LengthPosition;
@@ -277,5 +281,9 @@ public class PropertyService
         }
 
         return copyProperties;
+    }
+
+    internal List<Parcel> GetParcels(Property property) {
+        return property.GetParcels();
     }
 }

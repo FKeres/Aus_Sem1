@@ -140,6 +140,14 @@ class Parcel :TerritorialUnit<Property>
         _gpsPosHandler.GpsPositioons[1] = gps2;
     }
 
+    public List<Property> Properties() {
+        return Items;
+    }
+
+    public void SetProperties(List<Property> properties) {
+        Items = properties;
+    }
+
     #endregion
 
 }

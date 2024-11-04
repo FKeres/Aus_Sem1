@@ -53,11 +53,47 @@ else
                         <td>@parcel.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
                         <td><button class="btn btn-info" @onclick="() => ShowEditParcel(parcel)">Edit</button></td>
                         <td><button class="btn btn-danger" @onclick="() => RemoveParcel(parcel)">Remove</button></td>
+                        <td><button class="btn btn-danger" @onclick="() => ShowProperties(parcel)">Show Properties</button></td>
                     </tr>
                 }
             </tbody>
         </table>
     }
+}
+@if(_propertiesToShow is not null && _propertiesToShow.Count > 0) {
+    <table class="table">
+            <thead>
+                <tr>
+                    <th>Invent number</th>
+                    <th>Property description</th>
+                    <th>GPS1 width</th>
+                    <th>GPS1 width position</th>
+                    <th>GPS1 length</th>
+                    <th>GPS2 length position</th>
+                    <th>GPS2 width</th>
+                    <th>GPS2 width position</th>
+                    <th>GPS2 length</th>
+                    <th>GPS2 length position</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var property in _propertiesToShow)
+                {
+                    <tr>
+                        <td>@property.InventNo</td>
+                        <td>@property.PropDesc</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].Width</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].WidthPosition</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].Length</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[0].LengthPosition</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].Width</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].WidthPosition</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].Length</td>
+                        <td>@property.GpsPosHandler.GpsPositioons[1].LengthPosition</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 }
 @if (isAddDialogVisible)
 {
@@ -214,6 +250,7 @@ else
     private List<Parcel> _parcelsToShow = new List<Parcel>(); 
     private Parcel? _editParcel;
     private Parcel? _originalParc;
+    private List<Property> _propertiesToShow = new List<Property>();
     private bool isAddDialogVisible = false;
     private bool isSearchDialogVisible = false;
     private bool isEditDialogVisible = false;
@@ -329,6 +366,11 @@ else
 
     void ShowAll() {
         _parcelsToShow = ParcelService.GetAll();
+        StateHasChanged();
+    }
+
+    void ShowProperties(Parcel parcel) {
+        _propertiesToShow = ParcelService.GetProperties(parcel);
         StateHasChanged();
     }
 }

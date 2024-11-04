@@ -81,6 +81,7 @@ public class ParcelService
                 gpsHand.GpsPositioons[1] = gps2;
 
                 Parcel copyParcel = new Parcel(copyParc.ParcelId, copyParc.ParcNo, copyParc.ParcDesc, gpsHand.GpsPositioons);
+                copyParcel.SetProperties(copyParc.GetProperties());
                 copyParcels.Add(copyParcel);
             }
         }
@@ -151,6 +152,8 @@ public class ParcelService
                 foreach(var prop in node1[0].Data.GetProperties()) {
                     prop.RemoveParcelEq(node1[0].Data);
                 }
+
+                node1[0].Data.SetProperties(new List<Property>());
 
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).WidthPosition = newParc.GpsPosHandler.GetGpsPosition(0).WidthPosition;
                 node1[0].Data.GpsPosHandler.GetGpsPosition(0).LengthPosition = newParc.GpsPosHandler.GetGpsPosition(0).LengthPosition;
@@ -277,6 +280,10 @@ public class ParcelService
         }
 
         return copyParcels;
+    }
+
+    internal List<Property> GetProperties(Parcel parcel) {
+        return parcel.GetProperties();
     }
 
 }

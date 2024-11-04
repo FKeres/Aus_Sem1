@@ -169,16 +169,16 @@ class KDTree<T> : IEnumerable<T>
         compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
 
         //checks if element was found
-        firstFound = compResult == 0;
+        firstFound = KeysMatch(actualNode, keys);
 
         while(!itemsFound) {
             compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
 
             //checks if there was found elemen if was and the one i am looking at is not find ends
-            if(firstFound && compResult != 0) {
+            if(firstFound && !KeysMatch(actualNode, keys)) {
                 break;
             }
-            firstFound = compResult == 0;
+            firstFound = KeysMatch(actualNode, keys);
 
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys)) {
@@ -229,15 +229,15 @@ class KDTree<T> : IEnumerable<T>
         List<Node<T>> items = new List<Node<T>>();
 
         compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
-        firstFound = compResult == 0;
+        firstFound = KeysMatch(actualNode, keys);
 
         while(!itemsFound) {
             compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
             
-             if(firstFound && compResult != 0) {
+             if(firstFound && !KeysMatch(actualNode, keys)) {
                 break;
             }
-            firstFound = compResult == 0;
+            firstFound = KeysMatch(actualNode, keys);
 
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys)) {
