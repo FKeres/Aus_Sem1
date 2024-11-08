@@ -18,14 +18,14 @@ public class HomeService
         PropParcHolder holder = new PropParcHolder();
         holder.Parcel = parcel;
 
-        Key key1 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-        Key key2 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        Key key1 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(0).Width, parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+        Key key2 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(0).Length, parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
         List<Key> keys = [key1, key2];
         _tree.AddElement(keys, holder); 
 
-        Key key3 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-        Key key4 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        Key key3 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(1).Width, parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+        Key key4 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(1).Length, parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition));
 
         List<Key> keys2 = [key3, key4];
         _tree.AddElement(keys2, holder);
@@ -37,25 +37,22 @@ public class HomeService
         PropParcHolder holder = new PropParcHolder();
         holder.Property = property;
 
-        Key key1 = new Key(property.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-        Key key2 = new Key(property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        Key key1 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(0).Width, property.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+        Key key2 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(0).Length, property.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
         List<Key> keys = [key1, key2];
         _tree.AddElement(keys, holder); 
 
-        Key key3 = new Key(property.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-        Key key4 = new Key(property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        Key key3 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(1).Width, property.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+        Key key4 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(1).Length, property.GpsPosHandler.GetGpsPosition(1).LengthPosition));
 
         List<Key> keys2 = [key3, key4];
         _tree.AddElement(keys2, holder);
         
     }
 
-    internal List<PropParcHolder> SearchAll(double gpsWToSearch, double gpsLToSearch) {
-        Key key1 = new Key(gpsWToSearch);
-        Key key2 = new Key(gpsLToSearch);
-
-        List<Key> keys = [key1, key2];
+    internal List<PropParcHolder> SearchAll(char width, double gpsWToSearch, char length, double gpsLToSearch) {
+        List<Key> keys = [new Key(new Position(width, gpsWToSearch)),  new Key(new Position(length, gpsLToSearch))];
 
         List<PropParcHolder> copyHolderList = new List<PropParcHolder>();
 
@@ -143,15 +140,15 @@ public class HomeService
         PropParcHolder holder = new PropParcHolder();
         holder.Parcel = parcel;
 
-        Key key1 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-        Key key2 = new Key(parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        Key key1 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(0).Width, parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+        Key key2 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(0).Length, parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
         List<Key> keys = [key1, key2];
 
         _tree.RemoveExactElement(keys, holder);
 
-        Key key3 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-        Key key4 = new Key(parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        Key key3 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(1).Width, parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+        Key key4 = new Key(new Position(parcel.GpsPosHandler.GetGpsPosition(1).Length, parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition));
 
         List<Key> keys2 = [key3, key4];
 
@@ -163,15 +160,15 @@ public class HomeService
         PropParcHolder holder = new PropParcHolder();
         holder.Property = property;
 
-        Key key1 = new Key(property.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-        Key key2 = new Key(property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        Key key1 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(0).Width, property.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+        Key key2 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(0).Length, property.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
         List<Key> keys = [key1, key2];
 
         _tree.RemoveExactElement(keys, holder);
 
-        Key key3 = new Key(property.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-        Key key4 = new Key(property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+        Key key3 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(1).Width, property.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+        Key key4 = new Key(new Position(property.GpsPosHandler.GetGpsPosition(1).Length, property.GpsPosHandler.GetGpsPosition(1).LengthPosition));
 
         List<Key> keys2 = [key3, key4];
 
@@ -180,8 +177,8 @@ public class HomeService
 
     internal void EditProperty(Property oldProp, Property newProp) {
 
-        Key key1 = new Key(oldProp.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-        Key key2 = new Key(oldProp.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        Key key1 = new Key(new Position(oldProp.GpsPosHandler.GetGpsPosition(0).Width, oldProp.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+        Key key2 = new Key(new Position(oldProp.GpsPosHandler.GetGpsPosition(0).Length, oldProp.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
         List<Key> keys = [key1, key2];
 
@@ -197,25 +194,26 @@ public class HomeService
             if(newProp.PropDesc != "") {
                 node1[0].Data.Property.PropDesc = newProp.PropDesc;
             }
-            node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Width = newProp.GpsPosHandler.GetGpsPosition(0).Width;
-            node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Width = newProp.GpsPosHandler.GetGpsPosition(1).Width;
-            node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Length = newProp.GpsPosHandler.GetGpsPosition(0).Length;
-            node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Width = newProp.GpsPosHandler.GetGpsPosition(1).Width;
 
             if(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).WidthPosition != newProp.GpsPosHandler.GetGpsPosition(0).WidthPosition ||
                 node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).WidthPosition != newProp.GpsPosHandler.GetGpsPosition(1).WidthPosition ||
                 node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).LengthPosition != newProp.GpsPosHandler.GetGpsPosition(0).LengthPosition ||
-                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).LengthPosition != newProp.GpsPosHandler.GetGpsPosition(0).LengthPosition) {
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).LengthPosition != newProp.GpsPosHandler.GetGpsPosition(1).LengthPosition ||
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Width != newProp.GpsPosHandler.GetGpsPosition(0).Width ||
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Width != newProp.GpsPosHandler.GetGpsPosition(1).Width ||
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Length != newProp.GpsPosHandler.GetGpsPosition(0).Length ||
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Length != newProp.GpsPosHandler.GetGpsPosition(1).Length) {
 
-                Key key9 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-                Key key10 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                Key key9 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Width, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+                Key key10 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Length, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
                 List<Key> keys5 = [key9, key10];
 
                 _tree.RemoveExactElement(keys5, node1[0].Data);
 
-                Key key3 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-                Key key4 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                Key key3 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Width, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+                Key key4 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Length, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).LengthPosition));
+
 
                 List<Key> keys2 = [key3, key4];
 
@@ -225,17 +223,20 @@ public class HomeService
                 node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).LengthPosition = newProp.GpsPosHandler.GetGpsPosition(0).LengthPosition;
                 node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).WidthPosition = newProp.GpsPosHandler.GetGpsPosition(1).WidthPosition;
                 node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).LengthPosition = newProp.GpsPosHandler.GetGpsPosition(1).LengthPosition;
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Width = newProp.GpsPosHandler.GetGpsPosition(0).Width;
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Width = newProp.GpsPosHandler.GetGpsPosition(1).Width;
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Length = newProp.GpsPosHandler.GetGpsPosition(0).Length;
+                node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Length = newProp.GpsPosHandler.GetGpsPosition(1).Length;
 
-                Key key5 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-                Key key6 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                Key key5 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Width, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+                Key key6 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).Length, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
                 List<Key> keys3 = [key5, key6];
 
                 _tree.AddElement(keys3, node1[0].Data);
 
-                Key key7 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-                Key key8 = new Key(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).LengthPosition);
-
+                Key key7 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Width, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+                Key key8 = new Key(new Position(node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).Length, node1[0].Data.Property.GpsPosHandler.GetGpsPosition(1).LengthPosition));
                 List<Key> keys4 = [key7, key8];
 
                 _tree.AddElement(keys4, node1[0].Data);
@@ -244,8 +245,8 @@ public class HomeService
     }
 
     internal void EditParcel(Parcel oldParc, Parcel newParc) {
-        Key key1 = new Key(oldParc.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-        Key key2 = new Key(oldParc.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+        Key key1 = new Key(new Position(oldParc.GpsPosHandler.GetGpsPosition(0).Width, oldParc.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+        Key key2 = new Key(new Position(oldParc.GpsPosHandler.GetGpsPosition(0).Length, oldParc.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
         List<Key> keys = [key1, key2];
 
@@ -261,25 +262,25 @@ public class HomeService
             if(newParc.ParcDesc != "") {
                 node1[0].Data.Parcel.ParcDesc = newParc.ParcDesc;
             }
-            node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Width = newParc.GpsPosHandler.GetGpsPosition(0).Width;
-            node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Width = newParc.GpsPosHandler.GetGpsPosition(1).Width;
-            node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Length = newParc.GpsPosHandler.GetGpsPosition(0).Length;
-            node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Width = newParc.GpsPosHandler.GetGpsPosition(1).Width;
 
             if(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition != newParc.GpsPosHandler.GetGpsPosition(0).WidthPosition ||
                 node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition != newParc.GpsPosHandler.GetGpsPosition(1).WidthPosition ||
                 node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition != newParc.GpsPosHandler.GetGpsPosition(0).LengthPosition ||
-                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition != newParc.GpsPosHandler.GetGpsPosition(0).LengthPosition) {
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition != newParc.GpsPosHandler.GetGpsPosition(1).LengthPosition ||
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Width != newParc.GpsPosHandler.GetGpsPosition(0).Width ||
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Width != newParc.GpsPosHandler.GetGpsPosition(1).Width ||
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Length != newParc.GpsPosHandler.GetGpsPosition(0).Length ||
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Length != newParc.GpsPosHandler.GetGpsPosition(1).Length) {
 
-                Key key9 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-                Key key10 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
+                Key key9 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Width, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+                Key key10 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Length, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition));
 
                 List<Key> keys5 = [key9, key10];
 
                 _tree.RemoveExactElement(keys5, node1[0].Data);
 
-                Key key3 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-                Key key4 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                Key key3 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Width, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+                Key key4 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Length, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition));
 
                 List<Key> keys2 = [key3, key4];
 
@@ -289,16 +290,19 @@ public class HomeService
                 node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition = newParc.GpsPosHandler.GetGpsPosition(0).LengthPosition;
                 node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition = newParc.GpsPosHandler.GetGpsPosition(1).WidthPosition;
                 node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition = newParc.GpsPosHandler.GetGpsPosition(1).LengthPosition;
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Width = newParc.GpsPosHandler.GetGpsPosition(0).Width;
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Width = newParc.GpsPosHandler.GetGpsPosition(1).Width;
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Length = newParc.GpsPosHandler.GetGpsPosition(0).Length;
+                node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Length = newParc.GpsPosHandler.GetGpsPosition(1).Length;
 
-                Key key5 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition);
-                Key key6 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition);
-
+                Key key5 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Width, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).WidthPosition));
+                Key key6 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).Length, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(0).LengthPosition));
                 List<Key> keys3 = [key5, key6];
 
                 _tree.AddElement(keys3, node1[0].Data);
 
-                Key key7 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition);
-                Key key8 = new Key(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition);
+                Key key7 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Width, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).WidthPosition));
+                Key key8 = new Key(new Position(node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).Length, node1[0].Data.Parcel.GpsPosHandler.GetGpsPosition(1).LengthPosition));
 
                 List<Key> keys4 = [key7, key8];
 

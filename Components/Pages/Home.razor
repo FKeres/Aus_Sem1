@@ -124,16 +124,32 @@ else
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
+                        <label for="gpsWDToSearch1" class="form-label">GPS1 width</label>
+                        <input type="text" class="form-control" id="gpsWDToSearch1" @bind="_gpsWDToSearch1" maxlength="1" />
+                    </div>
+                    <div class="mb-3">
                         <label for="gpsWToSearch1" class="form-label">GPS1 width position</label>
                         <input type="number" class="form-control" id="gpsWToSearch1" @bind="_gpsWToSearch1" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsLDToSearch1" class="form-label">GPS1 length</label>
+                        <input type="text" class="form-control" id="gpsLDToSearch1" @bind="_gpsLDToSearch1"  maxlength="1"/>
                     </div>
                     <div class="mb-3">
                         <label for="gpsLToSearch1" class="form-label">GPS1 length position</label>
                         <input type="number" class="form-control" id="gpsLToSearch1" @bind="_gpsLToSearch1" />
                     </div>
                     <div class="mb-3">
+                        <label for="gpsWDToSearch2" class="form-label">GPS2 width</label>
+                        <input type="text" class="form-control" id="gpsWDToSearch2" @bind="_gpsWDToSearch2"  maxlength="1"/>
+                    </div>
+                    <div class="mb-3">
                         <label for="gpsWToSearch2" class="form-label">GPS2 width position</label>
                         <input type="number" class="form-control" id="gpsWToSearch2" @bind="_gpsWToSearch2" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsLDToSearch2" class="form-label">GPS2 length</label>
+                        <input type="text" class="form-control" id="gpsLDToSearch2" @bind="_gpsLDToSearch2"  maxlength="1"/>
                     </div>
                     <div class="mb-3">
                         <label for="gpsLToSearch2" class="form-label">GPS2 length position</label>
@@ -284,6 +300,7 @@ else
     private List<PropParcHolder> _propParcHolder = new List<PropParcHolder>();
     private List<PropParcHolder>? _propParcHolder1 = new List<PropParcHolder>();
     private double _gpsWToSearch1, _gpsLToSearch1, _gpsWToSearch2, _gpsLToSearch2;
+    private char _gpsWDToSearch1, _gpsWDToSearch2, _gpsLDToSearch1, _gpsLDToSearch2;
     private bool isSearchDialogVisible = false;
     private bool isTestDialogVisible = false;
     private bool isSaveDialogVisible = false;
@@ -306,13 +323,17 @@ else
 
 
     void SearchAll() {
-        _propParcHolder = HomeService.SearchAll(_gpsWToSearch1, _gpsLToSearch1);
-        _propParcHolder1 = HomeService.SearchAll(_gpsWToSearch2, _gpsLToSearch2);
+        _propParcHolder = HomeService.SearchAll(_gpsWDToSearch1, _gpsWToSearch1, _gpsLDToSearch1, _gpsLToSearch1);
+        _propParcHolder1 = HomeService.SearchAll(_gpsWDToSearch2, _gpsWToSearch2, _gpsLDToSearch2, _gpsLToSearch2);
         isSearchDialogVisible = false;
         _gpsWToSearch1 = 0.0;
         _gpsLToSearch1 = 0.0;
         _gpsWToSearch2 = 0.0;
         _gpsLToSearch2 = 0.0;
+        _gpsWDToSearch1 = ' ';
+        _gpsWDToSearch2 = ' ';
+        _gpsLDToSearch1 = ' ';
+        _gpsLDToSearch2 = ' ';
         StateHasChanged();
     }
 
@@ -329,6 +350,10 @@ else
         _gpsLToSearch1 = 0.0;
         _gpsWToSearch2 = 0.0;
         _gpsLToSearch2 = 0.0;
+        _gpsWDToSearch1 = ' ';
+        _gpsWDToSearch2 = ' ';
+        _gpsLDToSearch1 = ' ';
+        _gpsLDToSearch2 = ' ';
         StateHasChanged();
     }
 
@@ -403,7 +428,7 @@ else
     }
 
     void Generate() {
-        List<List<double>> keys = new List<List<double>>();
+        List<List<Position>> keys = new List<List<Position>>();
         keys = ParcelService.GenerateParc(_parcNum);
         Console.WriteLine(_coverPerc);
         PropertyService.GenerateProp(_propNum, _coverPerc, keys);

@@ -166,19 +166,19 @@ class KDTree<T> : IEnumerable<T>
         List<T> items = new List<T>();
         
         //compares the keys and desides which way to go next
-        compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
+        //compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
 
         //checks if element was found
-        firstFound = KeysMatch(actualNode, keys);
+        //firstFound = KeysMatch(actualNode, keys);
 
         while(!itemsFound) {
             compResult = KDTree<T>.CompareKeys(actualCompNodeLevel % actualNode.Keys.Count, actualNode, keys);
 
             //checks if there was found elemen if was and the one i am looking at is not find ends
-            if(firstFound && !KeysMatch(actualNode, keys)) {
-                break;
-            }
-            firstFound = KeysMatch(actualNode, keys);
+            //if(firstFound && !KeysMatch(actualNode, keys)) {
+                //break;
+            //}
+            //firstFound = KeysMatch(actualNode, keys);
 
             if(compResult <= 0) {
                 if(compResult == 0 && KeysMatch(actualNode, keys)) {

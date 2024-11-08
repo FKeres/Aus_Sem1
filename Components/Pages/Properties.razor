@@ -230,8 +230,16 @@ else
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
+                        <label for="gpsWDToSearch" class="form-label">GPS width</label>
+                        <input type="text" class="form-control" id="gpsWDToSearch" @bind="_gpsWDToSearch"  maxlength="1"/>
+                    </div>
+                    <div class="mb-3">
                         <label for="gpsWToSearch" class="form-label">GPS width position</label>
                         <input type="number" class="form-control" id="gpsWToSearch" @bind="_gpsWToSearch" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpsLDToSearch" class="form-label">GPS length</label>
+                        <input type="text" class="form-control" id="gpsLToSearch" @bind="_gpsLDToSearch"  maxlength="1"/>
                     </div>
                     <div class="mb-3">
                         <label for="gpsLToSearch" class="form-label">GPS length position</label>
@@ -261,6 +269,7 @@ else
     private char _gps1Width, _gps1Length;
     private char _gps2Width, _gps2Length;
     private double _gpsWToSearch, _gpsLToSearch;
+    private char _gpsWDToSearch, _gpsLDToSearch;
     private double _gps1WidthPosition, _gps1LengthPosition;
     private double _gps2WidthPosition, _gps2LengthPosition;
 
@@ -314,14 +323,18 @@ else
         isSearchDialogVisible = false;
         _gpsWToSearch = 0.0;
         _gpsLToSearch = 0.0;
+        _gpsLDToSearch = ' ';
+        _gpsWDToSearch = ' ';
         StateHasChanged();
     }
 
     void SearchProperty() {
-        _propertiesToShow = PropertyService.SearchProperties(_gpsWToSearch, _gpsLToSearch);
+        _propertiesToShow = PropertyService.SearchProperties(_gpsWDToSearch, _gpsWToSearch, _gpsLDToSearch, _gpsLToSearch);
         isSearchDialogVisible = false;
         _gpsWToSearch = 0.0;
         _gpsLToSearch = 0.0;
+        _gpsLDToSearch = ' ';
+        _gpsWDToSearch = ' ';
         StateHasChanged();
     }
 
